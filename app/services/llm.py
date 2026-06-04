@@ -1,0 +1,83 @@
+import os
+import json
+from typing import Dict, Any, Optional
+import google.generativeai as genai
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Load and validate key
+api_key = os.getenv("GEMINI_API_KEY")
+if not api_key:
+    raise ValueError("GEMINI_API_KEY environment variable is missing from .env")
+
+# Configure Google GenAI
+genai.configure(api_key=api_key)
+
+class LLMService:
+    @staticmethod
+    def call_gemini(
+        prompt: str,
+        system_instruction: Optional[str] = None,
+        model_name: str = "gemini-2.0-flash",
+        temperature: float = 0.2,
+        json_output: bool = False
+    ) -> str:
+        """
+        Invokes Gemini LLM model and returns the text response.
+        If json_output is True, configures the request to return application/json.
+        """
+        # Define generation config
+        generation_config = {
+            "temperature": temperature,
+        }
+        
+        if json_output:
+            generation_config["response_mime_type"] = "application/json"
+
+        # Initialize the model
+        model = genai.GenerativeModel(
+            model_name=model_name,
+            generation_config=generation_config,
+            system_instruction=system_instruction
+        )
+
+        # Generate response
+        response = model.generate_content(prompt)
+        
+        if not response.text:
+            raise RuntimeError("Gemini model returned an empty response.")
+            
+        return response.text
+
+    @staticmethod
+    def call_gemini_json(
+        prompt: str,
+        system_instruction: Optional[str] = None,
+        model_name: str = "gemini-2.0-flash",
+        temperature: float = 0.2
+    ) -> Dict[str, Any]:
+        """
+        Calls Gemini forcing a JSON structure and parses the result into a python dictionary.
+        """
+        raw_response = LLMService.call_gemini(
+            prompt=prompt,
+            system_instruction=system_instruction,
+            model_name=model_name,
+            temperature=temperature,
+            json_output=True
+        )
+        
+        try:
+            return json.loads(raw_response)
+        except json.JSONDecodeError as e:
+            # Simple fallback if JSON parsing fails
+            clean_str = raw_response.strip()
+            if clean_str.startswith("```json"):
+                clean_str = clean_str.split("```json")[1].split("```")[0].strip()
+            elif clean_str.startswith("```"):
+                clean_str = clean_str.split("```")[1].split("```")[0].strip()
+            try:
+                return json.loads(clean_str)
+            except Exception:
+                raise ValueError(f"Failed to parse JSON response from Gemini. Raw output: {raw_response}") from e
