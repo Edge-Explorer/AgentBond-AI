@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from app.services.llm import LLMService
 from app.models.schemas import CaseContext
 
@@ -10,7 +10,7 @@ class BaseAgent:
     A lightweight, custom Agent Harness base class built from scratch.
     It encapsulates LLM interaction, system prompts, and structured output formatting.
     """
-    def __init__(self, name: str, system_prompt: str, model_name: str= "gemini-2.0-flash"):
+    def __init__(self, name: str, system_prompt: str, model_name: Optional[str] = None):
         self.name= name
         self.system_prompt= system_prompt
         self.model_name= model_name
@@ -39,7 +39,7 @@ class CaseManagerAgent(BaseAgent):
     The Case Manager Agent decomposes the initial problem statement from the user
     into a structured list of hypotheses for investigator agents to research.
     """
-    def __init__(self, model_name: str= "gemini-2.0-flash"):
+    def __init__(self, model_name: Optional[str] = None):
         system_prompt= (
             "You are a Case Manager Agent, the head detective of a multi-agent investigation system.\n"
             "Your job is to read a problem statement and break it down logically into a list of testable hypotheses.\n"

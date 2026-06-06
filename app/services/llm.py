@@ -14,12 +14,15 @@ if not api_key:
 # Configure Google GenAI
 genai.configure(api_key=api_key)
 
+# Load configured model name (default to gemini-2.5-flash)
+DEFAULT_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+
 class LLMService:
     @staticmethod
     def call_gemini(
         prompt: str,
         system_instruction: Optional[str] = None,
-        model_name: str = "gemini-2.0-flash",
+        model_name: Optional[str] = None,
         temperature: float = 0.2,
         json_output: bool = False
     ) -> str:
@@ -27,6 +30,9 @@ class LLMService:
         Invokes Gemini LLM model and returns the text response.
         If json_output is True, configures the request to return application/json.
         """
+        # Fallback to default model if none specified
+        active_model = model_name or DEFAULT_MODEL
+        
         # Define generation config
         generation_config = {
             "temperature": temperature,
@@ -37,7 +43,7 @@ class LLMService:
 
         # Initialize the model
         model = genai.GenerativeModel(
-            model_name=model_name,
+            model_name=active_model,
             generation_config=generation_config,
             system_instruction=system_instruction
         )
@@ -54,7 +60,7 @@ class LLMService:
     def call_gemini_json(
         prompt: str,
         system_instruction: Optional[str] = None,
-        model_name: str = "gemini-2.0-flash",
+        model_name: Optional[str] = None,
         temperature: float = 0.2
     ) -> Dict[str, Any]:
         """
