@@ -1,7 +1,7 @@
 from fastapi import FastAPI     # type: ignore
 from fastapi.middleware.cors import CORSMiddleware      # type: ignore
 from app.api.routes import router as cases_router
-
+from prometheus_client import make_asgi_app
 app= FastAPI(
     title= "Multi-Agent Investigator Engine",
     description= "An agent orchestration runtime with shared context and verification.",
@@ -15,6 +15,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# 1. Mount Prometheus ASGI app to expose the /metrics endpoint
+metrics_app= make_asgi_app()
+app.mount("/metrics", metrics_app)
 
 # Register routes
 app.include_router(cases_router)
