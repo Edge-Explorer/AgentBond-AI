@@ -9,7 +9,10 @@ from app.services.context_manager import ContextManager
 from app.agents.case_manager import CaseManagerAgent
 from app.models.schemas import CaseStatus
 from app.observability.metrics import AGENT_LATENCY, AGENT_FAILURES
+
 load_dotenv()
+
+os.environ["prometheus_multiproc_dir"] = os.path.join(os.path.dirname(__file__), "..", "prometheus_multiproc_dir")
 
 # Configure Celery Logging
 logging.basicConfig(level=logging.INFO)
