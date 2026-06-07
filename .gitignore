@@ -37,3 +37,6 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
+
+# Prometheus multiproc metrics
+prometheus_multiproc_dir/
