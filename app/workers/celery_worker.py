@@ -2,12 +2,13 @@ import os
 import logging
 from celery import Celery    # type: ignore
 from dotenv import load_dotenv
+import time
 
 from app.services.database import SessionLocal
 from app.services.context_manager import ContextManager
 from app.agents.case_manager import CaseManagerAgent
 from app.models.schemas import CaseStatus
-
+from app.observability.metrics import AGENT_LATENCY, AGENT_FAILURES
 load_dotenv()
 
 # Configure Celery Logging
@@ -27,7 +28,7 @@ celery_app= Celery(
 # Optional configuration settings
 celery_app.conf.update(
     task_serializer= "json",
-    accept_container= ["json"],
+    accept_content= ["json"],
     result_serializer= "json",
     timezone= "UTC",
     enable_utc= True,
@@ -41,6 +42,9 @@ def run_case_manager_task(self, case_id: str):
     """
     logger.info(f"Starting async case decomposition for case ID: {case_id}")
     db= SessionLocal()
+    start_time= time.time()
+    agent_name= "CaseManagerAgent"
+    
     try:
         # 1. Fetch case context from NeonDB
         context= ContextManager.get_context(db= db, case_id= case_id)
@@ -51,8 +55,11 @@ def run_case_manager_task(self, case_id: str):
         
         # 2. Run the Case Manager Agent
         logger.info(f"Invoking CaseManagerAgent for problem: {context.problem_statement}")
-        agent= CaseManagerAgent()
-        new_hypotheses= agent.execute(context)
+        # Context manager timer to automatically record latency into Prometheus Histogram
+        with AGENT_LATENCY.labels(agent_name= agent_name).time():
+            
+            agent= CaseManagerAgent()
+            new_hypotheses= agent.execute(context)
         
         # 3. Add generated hypotheses back into NeonDB
         ContextManager.add_hypotheses(
@@ -71,6 +78,12 @@ def run_case_manager_task(self, case_id: str):
     
     except Exception as e:
         logger.error(f"Error executing run_case_manager_task: {str(e)}")
+        
+        # Increment failure metrics for observability
+        AGENT_FAILURES.labels(
+            agent_name= agent_name,
+            error_type= type(e).__name__
+        ).inc()
         
         # If it failed, mark case status as FAILED in NeonDB
         try:

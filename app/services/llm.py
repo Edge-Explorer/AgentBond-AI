@@ -3,6 +3,7 @@ import json
 from typing import Dict, Any, Optional
 import google.generativeai as genai
 from dotenv import load_dotenv
+from app.observability.metrics import LLM_TOKENS
 
 load_dotenv()
 
@@ -53,6 +54,24 @@ class LLMService:
         
         if not response.text:
             raise RuntimeError("Gemini model returned an empty response.")
+        
+        try:
+            usage= response.usage_metadata
+            if usage:
+                # Track Input Tokens (Prompt)
+                LLM_TOKENS.labels(
+                    model_name= active_model,
+                    token_type= "input"
+                ).inc(usage.prompt_token_count)
+                
+                # Track Output Tokens (Response)
+                LLM_TOKENS.labels(
+                    model_name= active_model,
+                    token_type= "output"
+                ).inc(usage.candidates_token_count)
+        except Exception as e:
+            # Prevent token tracking errors from breaking the core execution
+            pass
             
         return response.text
 
