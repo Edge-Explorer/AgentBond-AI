@@ -1,10 +1,16 @@
 import os
 
-# 1. Setup multi-process metrics directory env before importing prometheus
-os.environ["prometheus_multiproc_dir"] = os.path.join(os.path.dirname(__file__), "..", "prometheus_multiproc_dir")
+# 1. Setup absolute path for multi-process metrics
+metrics_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "prometheus_multiproc_dir"))
+os.environ["PROMETHEUS_MULTIPROC_DIR"] = metrics_path
 
-from fastapi import FastAPI, Response    # type: ignore
-from fastapi.middleware.cors import CORSMiddleware     # type: ignore
+print("--- DIAGNOSTICS STARTUP ---")
+print("PROMETHEUS_MULTIPROC_DIR set to:", os.environ.get("PROMETHEUS_MULTIPROC_DIR"))
+print("Does directory exist?:", os.path.isdir(metrics_path))
+print("----------------------------")
+
+from fastapi import FastAPI, Response  # type: ignore
+from fastapi.middleware.cors import CORSMiddleware   # type: ignore
 from prometheus_client import CollectorRegistry, multiprocess, generate_latest, CONTENT_TYPE_LATEST
 from app.api.routes import router as cases_router
 
@@ -28,8 +34,15 @@ app.include_router(cases_router)
 # 2. Expose aggregate multi-process metrics endpoint
 @app.get("/metrics/")
 def metrics():
+    print("--- DIAGNOSTICS REQUEST ---")
+    print("PROMETHEUS_MULTIPROC_DIR in metrics request:", os.environ.get("PROMETHEUS_MULTIPROC_DIR"))
+    print("Is it a directory?:", os.path.isdir(os.environ.get("PROMETHEUS_MULTIPROC_DIR", "")))
+    print("----------------------------")
+    
     registry = CollectorRegistry()
-    multiprocess.MultiProcessCollector(registry)
+    # Explicitly pass the path parameter to bypass the default env lookup
+    multiprocess.MultiProcessCollector(registry, path=metrics_path)
+    
     data = generate_latest(registry)
     return Response(content=data, media_type=CONTENT_TYPE_LATEST)
 

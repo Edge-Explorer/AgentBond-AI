@@ -12,7 +12,7 @@ from app.observability.metrics import AGENT_LATENCY, AGENT_FAILURES
 
 load_dotenv()
 
-os.environ["prometheus_multiproc_dir"] = os.path.join(os.path.dirname(__file__), "..", "prometheus_multiproc_dir")
+os.environ["PROMETHEUS_MULTIPROC_DIR"] = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "prometheus_multiproc_dir"))
 
 # Configure Celery Logging
 logging.basicConfig(level=logging.INFO)

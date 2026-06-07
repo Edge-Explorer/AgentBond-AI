@@ -1,3 +1,6 @@
+import os
+
+os.environ["PROMETHEUS_MULTIPROC_DIR"]= os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "prometheus_multiproc_dir"))
 from prometheus_client import Counter, Histogram, Gauge
 
 # 1. Track Agent Latency (Histogram)
