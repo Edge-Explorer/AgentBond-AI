@@ -1,6 +1,6 @@
 import logging
-from duckduckgo_search import DDGS   # type: ignore
-
+from ddgs import DDGS     # type: ignore
+ 
 logger= logging.getLogger(__name__)
 
 def search_web(query: str, max_results: int=5) -> str:

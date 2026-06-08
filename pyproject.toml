@@ -16,7 +16,7 @@ dependencies = [
     "google-generativeai==0.5.4",
     "prometheus-client==0.20.0",
     "python-dotenv==1.0.1",
-    "duckduckgo-search>=8.1.1",
+    "ddgs>=9.14.3",
 ]
 
 [dependency-groups]
