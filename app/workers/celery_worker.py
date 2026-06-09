@@ -77,7 +77,7 @@ def run_case_manager_task(self, case_id: str):
         # 3. Retrieve refreshed case context containing assigned hypothesis database IDs
         refreshed_context = ContextManager.get_context(db=db, case_id=case_id)
         
-        # 4. Loop through hypotheses and execute ResearchAgent on each
+                # 4. Loop through hypotheses and execute ResearchAgent on each
         for hypothesis in refreshed_context.hypotheses:
             logger.info(f"Investigating Hypothesis: '{hypothesis.statement}' (ID: {hypothesis.id})")
             
@@ -133,6 +133,10 @@ def run_case_manager_task(self, case_id: str):
                 hypothesis_id=hypothesis.id,
                 status=verdict.get("status", "inconclusive")
             )
+            
+            # ADD A DELAY TO PREVENT RATE LIMITING
+            logger.info("Sleeping for 4 seconds to respect OpenRouter Free Rate Limits...")
+            time.sleep(4)
         
         # 5. Mark overall case status as completed
         ContextManager.update_status(db=db, case_id=case_id, status=CaseStatus.COMPLETED)
