@@ -135,8 +135,8 @@ def run_case_manager_task(self, case_id: str):
             )
             
             # ADD A DELAY TO PREVENT RATE LIMITING
-            logger.info("Sleeping for 4 seconds to respect OpenRouter Free Rate Limits...")
-            time.sleep(4)
+            logger.info("Sleeping for 12 seconds to respect OpenRouter Free Rate Limits...")
+            time.sleep(12)
         
         # 5. Mark overall case status as completed
         ContextManager.update_status(db=db, case_id=case_id, status=CaseStatus.COMPLETED)
@@ -158,7 +158,7 @@ def run_case_manager_task(self, case_id: str):
             logger.error(f"Failed to set status to FAILED for case ID {case_id}: {str(rollback_err)}")
             
         try:
-            raise self.retry(exc=e, countdown=10)
+            raise self.retry(exc=e, countdown=60)
         except Exception as retry_err:
             logger.error(f"Task retry failed: {str(retry_err)}")
             return {"status": "failed", "error": str(e)}

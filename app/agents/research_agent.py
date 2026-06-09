@@ -47,7 +47,7 @@ class ResearchAgent(BaseAgent):
             
         # Step 2: Fetch web results
         logger.info(f"ResearchAgent searching the web for: '{search_query}'")
-        web_results= search_web(search_query, max_results= 5)
+        web_results= search_web(search_query, max_results= 2)
         
         # Step 3: Synthesize final verdict
         synthesis_prompt = (
