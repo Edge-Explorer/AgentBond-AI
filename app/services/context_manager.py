@@ -196,4 +196,17 @@ class ContextManager:
             
         db.commit()
         return ContextManager.get_context(db, case_id)
-        
+    
+    @staticmethod
+    def update_hypothesis(db: Session, hypothesis_id: str, status: str, assigned_investigator: Optional[str]= None) -> Optional[HypothesisModel]:
+        """
+        Updates the execution status and assigned investigator of a specific hypothesis.
+        """
+        hyp_db= db.query(HypothesisModel).filter(HypothesisModel.id == hypothesis_id).first()
+        if hyp_db:
+            hyp_db.status= status
+            if assigned_investigator:
+                hyp_db.assigned_investigator= assigned_investigator
+            db.commit()
+            db.refresh(hyp_db)
+        return hyp_db
