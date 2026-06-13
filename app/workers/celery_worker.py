@@ -52,7 +52,6 @@ def run_case_manager_task(self, case_id: str):
     """
     logger.info(f"Starting async agent investigation for case ID: {case_id}")
     db = SessionLocal()
-    start_time = time.time()
     
     try:
         # 1. Fetch case context from database
@@ -77,7 +76,7 @@ def run_case_manager_task(self, case_id: str):
         # 3. Retrieve refreshed case context containing assigned hypothesis database IDs
         refreshed_context = ContextManager.get_context(db=db, case_id=case_id)
         
-                # 4. Loop through hypotheses and execute ResearchAgent on each
+        # 4. Loop through hypotheses and execute ResearchAgent on each (No delays since we are on paid Gemini API)
         for hypothesis in refreshed_context.hypotheses:
             logger.info(f"Investigating Hypothesis: '{hypothesis.statement}' (ID: {hypothesis.id})")
             
@@ -133,10 +132,6 @@ def run_case_manager_task(self, case_id: str):
                 hypothesis_id=hypothesis.id,
                 status=verdict.get("status", "inconclusive")
             )
-            
-            # ADD A DELAY TO PREVENT RATE LIMITING
-            logger.info("Sleeping for 12 seconds to respect OpenRouter Free Rate Limits...")
-            time.sleep(12)
         
         # 5. Mark overall case status as completed
         ContextManager.update_status(db=db, case_id=case_id, status=CaseStatus.COMPLETED)
@@ -158,7 +153,7 @@ def run_case_manager_task(self, case_id: str):
             logger.error(f"Failed to set status to FAILED for case ID {case_id}: {str(rollback_err)}")
             
         try:
-            raise self.retry(exc=e, countdown=60)
+            raise self.retry(exc=e, countdown=10)
         except Exception as retry_err:
             logger.error(f"Task retry failed: {str(retry_err)}")
             return {"status": "failed", "error": str(e)}
