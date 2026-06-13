@@ -40,7 +40,7 @@ export default function CapabilitiesSection() {
   ];
 
   return (
-    <section id="capabilities" className="relative w-screen min-h-screen bg-transparent overflow-hidden flex flex-col justify-between">
+    <section id="capabilities" className="relative w-screen min-h-screen bg-transparent flex flex-col justify-between">
 
       {/* Foreground Content */}
       <div className="relative z-10 px-8 md:px-16 lg:px-20 pt-24 pb-10 flex flex-col min-h-screen justify-between">

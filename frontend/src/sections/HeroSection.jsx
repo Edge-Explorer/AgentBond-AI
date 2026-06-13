@@ -23,7 +23,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section id="home" className="relative w-screen h-screen bg-transparent overflow-hidden flex flex-col justify-between z-10">
+    <section id="home" className="relative w-screen min-h-screen bg-transparent flex flex-col justify-between z-10">
 
       {/* Main Content Layout */}
       <motion.div
