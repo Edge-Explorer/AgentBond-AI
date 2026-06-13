@@ -37,7 +37,7 @@ export default function HeroSection() {
         variants={containerVariants}
         initial="initial"
         animate="animate"
-        className="relative z-10 flex-1 flex flex-col items-center justify-center text-center pt-28 px-4"
+        className="relative z-10 flex-1 flex flex-col items-center justify-center text-center pt-36 px-4"
       >
         {/* Animated Badge */}
         <motion.div
@@ -54,7 +54,7 @@ export default function HeroSection() {
         <div className="mt-6">
           <BlurText
             text="Deconstruct Complex Problems Across the Digital Universe"
-            className="text-6xl md:text-7xl lg:text-[5.5rem] font-heading italic text-white leading-[0.8] max-w-4xl justify-center tracking-[-4px]"
+            className="text-5xl md:text-6xl lg:text-[4.8rem] font-heading italic text-white leading-[0.95] max-w-4xl justify-center tracking-[-3px]"
           />
         </div>
 
