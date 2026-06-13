@@ -1,6 +1,5 @@
 import React from "react";
 import { motion } from "framer-motion";
-import FadingVideo from "../components/FadingVideo";
 import BlurText from "../components/BlurText";
 
 export default function HeroSection() {
@@ -24,13 +23,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section id="home" className="relative w-screen h-screen bg-black overflow-hidden flex flex-col justify-between z-10">
-      {/* Background Video Layer */}
-      <FadingVideo
-        src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260418_080021_d598092b-c4c2-4e53-8e46-94cf9064cd50.mp4"
-        className="absolute left-1/2 top-0 -translate-x-1/2 object-cover object-top z-0"
-        style={{ width: "120%", height: "120%" }}
-      />
+    <section id="home" className="relative w-screen h-screen bg-transparent overflow-hidden flex flex-col justify-between z-10">
 
       {/* Main Content Layout */}
       <motion.div

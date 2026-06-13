@@ -1,5 +1,4 @@
 import React from "react";
-import FadingVideo from "../components/FadingVideo";
 
 export default function CapabilitiesSection() {
   const cards = [
@@ -41,12 +40,7 @@ export default function CapabilitiesSection() {
   ];
 
   return (
-    <section id="capabilities" className="relative w-screen min-h-screen bg-black overflow-hidden flex flex-col justify-between">
-      {/* Background Video Layer */}
-      <FadingVideo
-        src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260418_080021_d598092b-c4c2-4e53-8e46-94cf9064cd50.mp4"
-        className="absolute inset-0 w-full h-full object-cover z-0"
-      />
+    <section id="capabilities" className="relative w-screen min-h-screen bg-transparent overflow-hidden flex flex-col justify-between">
 
       {/* Foreground Content */}
       <div className="relative z-10 px-8 md:px-16 lg:px-20 pt-24 pb-10 flex flex-col min-h-screen justify-between">
