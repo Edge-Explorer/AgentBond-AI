@@ -4,37 +4,39 @@ import FadingVideo from "../components/FadingVideo";
 export default function CapabilitiesSection() {
   const cards = [
     {
-      title: "AI Scenery",
-      body: "AI analyzes your product to create indistinguishable natural environments — from Icelandic cliffs to misty forests.",
+      title: "Deconstruct",
+      body: "The Case Manager reads your initial problem statement and logically decomposes it into testable hypotheses for investigator agents to research.",
       icon: (
-        // Image outline SVG
-        <svg className="w-6 h-6 fill-current text-white" viewBox="0 0 24 24">
-          <path d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21H5Zm1-4h12l-3.75-5-3 4L9 13l-3 4Z" />
+        // Code/Brackets outline SVG
+        <svg className="w-6 h-6 fill-none stroke-white" strokeWidth="1.5" viewBox="0 0 24 24">
+          <polyline points="16 18 22 12 16 6"></polyline>
+          <polyline points="8 6 2 12 8 18"></polyline>
         </svg>
       ),
-      tags: ["Natural Context", "Photo Realism", "Infinite Settings", "Eco-Vibe"],
+      tags: ["Hypothesis Builder", "Logical Breakdown", "Structured JSON", "Case Manager"],
     },
     {
-      title: "Batch Production",
-      body: "Style your entire product line in minutes. Create a unified visual identity for catalogues and social media without weeks of retouching.",
+      title: "Research",
+      body: "Spawns autonomous investigators to query search engines, extract snippet summaries, and verify live web data without requiring third-party API keys.",
       icon: (
-        // Movie outline SVG
-        <svg className="w-6 h-6 fill-current text-white" viewBox="0 0 24 24">
-          <path d="M4 6.47 5.76 10H20v8H4V6.47M22 4h-4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.89-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4Z" />
+        // Globe/Search outline SVG
+        <svg className="w-6 h-6 fill-none stroke-white" strokeWidth="1.5" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
       ),
-      tags: ["Scale Fast", "Visual Consistency", "Time Saver", "Ready to Post"],
+      tags: ["Live Web Crawl", "DDG Integration", "Telemetry Sync", "Real-Time Facts"],
     },
     {
-      title: "Smart Lighting",
-      body: "Automatic lighting and material adjustment. Achieve flawless integration with realistic shadows and sunlight.",
+      title: "Synthesize",
+      body: "Weighs supporting versus contrary evidence, resolves logic conflicts, and generates a structured verdict ('verified' or 'disproved') for every case.",
       icon: (
         // Lightbulb outline SVG
-        <svg className="w-6 h-6 fill-current text-white" viewBox="0 0 24 24">
-          <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1Zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7Z" />
+        <svg className="w-6 h-6 fill-none stroke-white" strokeWidth="1.5" viewBox="0 0 24 24">
+          <path d="M9 21h6M9 17h6M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74A7 7 0 0 0 12 2z"></path>
         </svg>
       ),
-      tags: ["Ray Tracing", "Physical Shadows", "Studio Quality", "Sunlight Sync"],
+      tags: ["Evidence Grouping", "Conflict Checks", "Structured Verdict", "JSON Reports"],
     },
   ];
 
@@ -44,7 +46,6 @@ export default function CapabilitiesSection() {
       <FadingVideo
         src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260418_094631_d30ab262-45ee-4b7d-99f3-5d5848c8ef13.mp4"
         className="absolute inset-0 w-full h-full object-cover z-0"
-        style={{}}
       />
 
       {/* Foreground Content */}
@@ -52,10 +53,10 @@ export default function CapabilitiesSection() {
         {/* Header section */}
         <div className="mb-auto">
           <p className="text-sm font-body text-white/80 mb-4 tracking-wider uppercase">
-            // Capabilities
+            // Core Engine
           </p>
           <h2 className="font-heading italic text-white text-6xl md:text-7xl lg:text-[6.5rem] leading-[0.9] tracking-[-3px]">
-            Production
+            Investigation
             <br />
             evolved
           </h2>

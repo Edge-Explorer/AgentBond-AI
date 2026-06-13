@@ -45,16 +45,16 @@ export default function HeroSection() {
           className="flex items-center gap-2 rounded-full p-1 pr-3 text-sm text-white/90 liquid-glass select-none"
         >
           <span className="bg-white text-black px-3 py-0.5 text-xs font-semibold rounded-full uppercase tracking-wider">
-            New
+            Active
           </span>
-          <span>Maiden Crewed Voyage to Mars Arrives 2026</span>
+          <span>Multi-Agent Autonomous Core is Live</span>
         </motion.div>
 
         {/* Word-by-word Animate Blur Title */}
         <div className="mt-6">
           <BlurText
-            text="Venture Past Our Sky Across the Universe"
-            className="text-6xl md:text-7xl lg:text-[5.5rem] font-heading italic text-white leading-[0.8] max-w-3xl justify-center tracking-[-4px]"
+            text="Deconstruct Complex Problems Across the Digital Universe"
+            className="text-6xl md:text-7xl lg:text-[5.5rem] font-heading italic text-white leading-[0.8] max-w-4xl justify-center tracking-[-4px]"
           />
         </div>
 
@@ -63,15 +63,14 @@ export default function HeroSection() {
           variants={itemVariants}
           className="mt-6 text-sm md:text-base text-white/80 max-w-xl font-body font-light leading-relaxed"
         >
-          Discover the universe in ways once unimaginable. Our pioneering vessels and
-          breakthrough engineering bring deep-space exploration within reach—secure and
-          extraordinary.
+          Input any problem. Our Case Manager Agent automatically breaks it down into testable hypotheses, 
+          spawns autonomous Research Agents to crawl the web, and outputs live-verified intelligence in seconds.
         </motion.p>
 
         {/* Actions / CTAs */}
         <motion.div variants={itemVariants} className="flex items-center gap-6 mt-8">
           <button className="flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium text-white liquid-glass-strong hover:scale-105 transition-transform">
-            Start Your Voyage
+            Start Investigation
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="7" y1="17" x2="17" y2="7"></line>
               <polyline points="7 7 17 7 17 17"></polyline>
@@ -81,7 +80,7 @@ export default function HeroSection() {
             <svg className="w-5 h-5 fill-white group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
               <polygon points="6 4 20 12 6 20 6 4"></polygon>
             </svg>
-            View Liftoff
+            Watch Demo
           </button>
         </motion.div>
 
@@ -95,25 +94,24 @@ export default function HeroSection() {
               <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
             <h4 className="text-4xl font-heading italic text-white tracking-[-1px] leading-none mt-6">
-              34.5 Min
+              12.5 Sec
             </h4>
             <p className="text-xs text-white/60 font-body font-light mt-2">
-              Average Videos Watch Time
+              Average Investigation Speed
             </p>
           </div>
 
           {/* Stat 2 */}
           <div className="flex flex-col items-start text-left p-5 w-[220px] rounded-[1.25rem] liquid-glass">
-            {/* Globe SVG */}
+            {/* Shield SVG */}
             <svg className="w-7 h-7 stroke-white fill-none" strokeWidth="1.5" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             </svg>
             <h4 className="text-4xl font-heading italic text-white tracking-[-1px] leading-none mt-6">
-              2.8B+
+              100%
             </h4>
             <p className="text-xs text-white/60 font-body font-light mt-2">
-              Users Across the Globe
+              Automated Evidence Verification Rate
             </p>
           </div>
         </motion.div>
@@ -128,18 +126,18 @@ export default function HeroSection() {
         className="relative z-10 flex flex-col items-center gap-4 pb-8"
       >
         <div className="rounded-full px-4 py-1 text-[11px] font-medium text-white/70 liquid-glass select-none">
-          Collaborating with top aerospace pioneers globally
+          Powered by state-of-the-art AI infrastructure and protocols
         </div>
         <div className="flex items-center justify-center gap-12 md:gap-16 text-2xl md:text-3xl font-heading italic text-white/90 select-none mt-2">
-          <span>Aeon</span>
+          <span>FastAPI</span>
           <span>·</span>
-          <span>Vela</span>
+          <span>Celery</span>
           <span>·</span>
-          <span>Apex</span>
+          <span>Redis</span>
           <span>·</span>
-          <span>Orbit</span>
+          <span>PostgreSQL</span>
           <span>·</span>
-          <span>Zeno</span>
+          <span>Gemini Core</span>
         </div>
       </motion.div>
     </section>
