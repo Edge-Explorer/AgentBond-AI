@@ -1,0 +1,1 @@
+// FadingVideo component

@@ -40,3 +40,8 @@ Thumbs.db
 
 # Prometheus multiproc metrics
 prometheus_multiproc_dir/
+
+# Frontend dependencies & builds
+node_modules/
+frontend/node_modules/
+frontend/dist/
