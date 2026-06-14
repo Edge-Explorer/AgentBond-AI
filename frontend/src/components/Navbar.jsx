@@ -4,9 +4,13 @@ import { motion, AnimatePresence } from "framer-motion";
 const NAV_LINKS = [
   { label: "Home", href: "#home" },
   { label: "Capabilities", href: "#capabilities" },
-  { label: "Innovation", href: "#innovation" },
-  { label: "Plan Launch", href: "#plan" },
 ];
+
+// Placeholder: replace with real Google OAuth + JWT flow later
+const handleBeginInvestigation = () => {
+  // TODO: trigger Google OAuth login → issue JWT → redirect to dashboard
+  alert("Google OAuth coming soon! 🔐");
+};
 
 // SVG Icons
 const GithubIcon = () => (
@@ -92,19 +96,17 @@ export default function Navbar() {
             </a>
           ))}
 
-          {/* Claim a Spot CTA */}
-          <a
-            href="https://github.com/Edge-Explorer/AgentBond-AI"
-            target="_blank"
-            rel="noopener noreferrer"
+          {/* Begin Investigation CTA */}
+          <button
+            onClick={handleBeginInvestigation}
             className="flex items-center gap-1.5 bg-white text-black px-4 py-2 text-sm font-semibold rounded-full hover:bg-white/90 active:scale-95 transition-all whitespace-nowrap ml-1"
           >
-            Claim a Spot
+            Begin Investigation
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="7" y1="17" x2="17" y2="7" />
-              <polyline points="7 7 17 7 17 17" />
+              <circle cx="11" cy="11" r="7" />
+              <line x1="16.5" y1="16.5" x2="21" y2="21" />
             </svg>
-          </a>
+          </button>
         </div>
 
         {/* Right: Social icon buttons + mobile menu trigger */}
@@ -204,14 +206,12 @@ export default function Navbar() {
 
             <div className="h-px bg-white/10 my-2" />
 
-            <a
-              href="https://github.com/Edge-Explorer/AgentBond-AI"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={handleBeginInvestigation}
               className="flex items-center justify-center gap-2 bg-white text-black px-4 py-2.5 text-sm font-semibold rounded-full hover:bg-white/90 transition-all"
             >
-              Claim a Spot ↗
-            </a>
+              Begin Investigation 🔍
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
