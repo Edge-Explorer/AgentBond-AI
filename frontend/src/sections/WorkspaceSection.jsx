@@ -360,9 +360,11 @@ export default function WorkspaceSection({ onBackToLanding }) {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleHideCase(c.case_id);
+                    if (window.confirm("Are you sure you want to delete this case chat?")) {
+                      handleHideCase(c.case_id);
+                    }
                   }}
-                  className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-md z-30 cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95"
+                  className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-md z-30 cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95 opacity-0 group-hover:opacity-100"
                   title="Hide investigation"
                 >
                   &times;
