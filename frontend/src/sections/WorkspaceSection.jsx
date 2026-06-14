@@ -141,6 +141,9 @@ export default function WorkspaceSection({ onBackToLanding }) {
 
   const visibleCases = cases.filter((c) => !hiddenCaseIds.includes(c.case_id));
 
+  // Case object selected for custom ChatGPT-style deletion modal
+  const [caseToDelete, setCaseToDelete] = useState(null);
+
   // Accordion state for hypotheses
   const [expandedHypothesisId, setExpandedHypothesisId] = useState(null);
 
@@ -360,9 +363,7 @@ export default function WorkspaceSection({ onBackToLanding }) {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (window.confirm("Are you sure you want to delete this case chat?")) {
-                      handleHideCase(c.case_id);
-                    }
+                    setCaseToDelete(c);
                   }}
                   className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-md z-30 cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95 opacity-0 group-hover:opacity-100"
                   title="Hide investigation"
@@ -797,6 +798,46 @@ export default function WorkspaceSection({ onBackToLanding }) {
         {/* Main Workspace Watermark */}
         <AgentBondWatermark size={240} className="absolute bottom-6 right-6 opacity-[0.03] z-0 pointer-events-none" />
       </div>
+
+      {/* ── Custom ChatGPT-style Delete Confirmation Modal ── */}
+      <AnimatePresence>
+        {caseToDelete && (
+          <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.15 }}
+              className="bg-[#18181b] border border-white/10 p-6 rounded-2xl w-full max-w-sm shadow-[0_24px_80px_rgba(0,0,0,0.8)] flex flex-col gap-4 text-left"
+            >
+              <h4 className="text-lg font-semibold text-white/95">
+                Delete chat?
+              </h4>
+              <p className="text-sm text-white/55 font-light leading-relaxed">
+                This will delete <strong className="text-white/90 font-medium">"{caseToDelete.problem_statement}"</strong>.
+              </p>
+              
+              <div className="flex justify-end gap-2.5 mt-2">
+                <button
+                  onClick={() => setCaseToDelete(null)}
+                  className="px-4 py-2.5 rounded-full border border-white/10 hover:bg-white/5 text-xs font-semibold text-white/80 hover:text-white transition-all cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    handleHideCase(caseToDelete.case_id);
+                    setCaseToDelete(null);
+                  }}
+                  className="px-4 py-2.5 rounded-full bg-red-600 hover:bg-red-700 text-xs font-semibold text-white transition-all shadow-lg shadow-red-900/20 hover:scale-105 active:scale-95 cursor-pointer"
+                >
+                  Delete
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
