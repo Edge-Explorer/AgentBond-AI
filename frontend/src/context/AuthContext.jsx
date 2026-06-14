@@ -135,10 +135,14 @@ export function AuthProvider({ children }) {
       const checkPopupClosed = setInterval(() => {
         if (completed) return;
         if (!popup || popup.closed) {
-          completed = true;
-          clearInterval(checkPopupClosed);
-          window.removeEventListener("message", handleMessage);
-          resolve({ success: false, error: "Popup closed by user" });
+          // Give the message event listener a short window (200ms) to process any pending postMessage
+          setTimeout(() => {
+            if (completed) return;
+            completed = true;
+            clearInterval(checkPopupClosed);
+            window.removeEventListener("message", handleMessage);
+            resolve({ success: false, error: "Popup closed by user" });
+          }, 200);
         }
       }, 1000);
     });
