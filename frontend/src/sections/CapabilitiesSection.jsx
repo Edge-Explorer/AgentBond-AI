@@ -4,7 +4,7 @@ export default function CapabilitiesSection() {
   const cards = [
     {
       title: "Deconstruct",
-      body: "The Case Manager reads your initial problem statement and logically decomposes it into testable hypotheses for investigator agents to research.",
+      body: "The Case Manager Agent decomposes your initial problem statement into structured, testable hypotheses using dynamic JSON templates.",
       icon: (
         // Code/Brackets outline SVG
         <svg className="w-6 h-6 fill-none stroke-white" strokeWidth="1.5" viewBox="0 0 24 24">
@@ -12,11 +12,11 @@ export default function CapabilitiesSection() {
           <polyline points="8 6 2 12 8 18"></polyline>
         </svg>
       ),
-      tags: ["Hypothesis Builder", "Logical Breakdown", "Structured JSON", "Case Manager"],
+      tags: ["Hypothesis Builder", "Logical Decomposition", "Structured JSON", "Case Manager"],
     },
     {
       title: "Research",
-      body: "Spawns autonomous investigators to query search engines, extract snippet summaries, and verify live web data without requiring third-party API keys.",
+      body: "The Research Agent formulates optimized search queries and crawls DuckDuckGo to retrieve real-time facts and snippet evidence without API keys.",
       icon: (
         // Globe/Search outline SVG
         <svg className="w-6 h-6 fill-none stroke-white" strokeWidth="1.5" viewBox="0 0 24 24">
@@ -24,18 +24,18 @@ export default function CapabilitiesSection() {
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
       ),
-      tags: ["Live Web Crawl", "DDG Integration", "Telemetry Sync", "Real-Time Facts"],
+      tags: ["DuckDuckGo Search", "Web Querying", "Evidence Fetching", "Research Agent"],
     },
     {
       title: "Synthesize",
-      body: "Weighs supporting versus contrary evidence, resolves logic conflicts, and generates a structured verdict ('verified' or 'disproved') for every case.",
+      body: "Categorizes evidence into supporting or contrary arguments, compiles final analysis conclusions, and marks the final verdict status.",
       icon: (
         // Lightbulb outline SVG
         <svg className="w-6 h-6 fill-none stroke-white" strokeWidth="1.5" viewBox="0 0 24 24">
           <path d="M9 21h6M9 17h6M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74A7 7 0 0 0 12 2z"></path>
         </svg>
       ),
-      tags: ["Evidence Grouping", "Conflict Checks", "Structured Verdict", "JSON Reports"],
+      tags: ["Evidence Sorting", "Conflict Evaluation", "Structured Verdict", "Case Updates"],
     },
   ];
 
