@@ -42,6 +42,14 @@ const CloseIcon = () => (
   </svg>
 );
 
+// Tiny bond/link icon for the logo
+const BondIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+  </svg>
+);
+
 export default function Navbar({ onOpenAuth }) {
   const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -67,109 +75,131 @@ export default function Navbar({ onOpenAuth }) {
         initial={{ y: -30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="fixed top-4 left-0 right-0 px-5 lg:px-12 z-50 grid grid-cols-[auto_1fr_auto] items-center gap-4 transition-all duration-300"
+        className="fixed top-4 left-0 right-0 px-5 lg:px-10 z-50"
       >
-        {/* Left: Logo */}
-        <a
-          href="#home"
-          onClick={(e) => { e.preventDefault(); handleNavClick("#home"); }}
-          className="w-12 h-12 rounded-full liquid-glass flex items-center justify-center text-white text-3xl font-heading italic select-none hover:scale-105 transition-transform"
-          aria-label="Go to home"
-        >
-          a
-        </a>
+        {/* Single row: Left logo | Absolutely centered nav | Right actions */}
+        <div className="relative flex items-center justify-between">
 
-        {/* Center: Nav pill (desktop) — absolutely centered */}
-        <div className="hidden md:flex justify-center">
-          <div className="flex items-center gap-0.5 px-1.5 py-1.5 rounded-full liquid-glass">
-          {NAV_LINKS.map(({ label, href }) => (
-            <a
-              key={href}
-              href={href}
-              onClick={(e) => { e.preventDefault(); handleNavClick(href); }}
-              className="px-3.5 py-2 text-sm font-medium text-white/85 font-body hover:text-white hover:bg-white/8 rounded-full transition-all duration-200"
-            >
-              {label}
-            </a>
-          ))}
-
-          {user ? (
-            <div className="flex items-center gap-2 ml-1">
-              <img
-                src={user.avatar_url}
-                alt={user.name}
-                className="w-7 h-7 rounded-full border border-white/20"
-              />
-              <span className="text-xs font-semibold max-w-[80px] truncate">{user.name}</span>
-              <button
-                onClick={logout}
-                className="text-xs text-white/50 hover:text-white underline cursor-pointer ml-1"
-              >
-                Logout
-              </button>
+          {/* ── LEFT: Logo / Wordmark ── */}
+          <a
+            href="#home"
+            onClick={(e) => { e.preventDefault(); handleNavClick("#home"); }}
+            className="flex items-center gap-2.5 select-none group"
+            aria-label="AgentBond AI — Go to home"
+          >
+            {/* Icon badge */}
+            <div className="w-10 h-10 rounded-xl liquid-glass flex items-center justify-center text-white group-hover:scale-105 transition-transform duration-200 shrink-0">
+              <BondIcon />
             </div>
-          ) : (
-            <button
-              onClick={onOpenAuth}
-              className="flex items-center gap-1.5 bg-white text-black px-4 py-2 text-sm font-semibold rounded-full hover:bg-white/90 active:scale-95 transition-all whitespace-nowrap ml-1"
-            >
-              Begin Investigation
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="7" />
-                <line x1="16.5" y1="16.5" x2="21" y2="21" />
-              </svg>
-            </button>
-          )}
+
+            {/* Wordmark — hidden on very small screens */}
+            <div className="hidden sm:flex flex-col leading-none">
+              <span
+                className="text-white font-heading italic text-[1.1rem] tracking-[-0.02em] leading-none"
+                style={{ letterSpacing: "-0.02em" }}
+              >
+                AgentBond
+              </span>
+              <span className="text-white/40 text-[0.6rem] font-body font-medium tracking-[0.18em] uppercase leading-none mt-0.5">
+                AI · Multi-Agent
+              </span>
+            </div>
+          </a>
+
+          {/* ── CENTER: Nav pill — truly centered via absolute positioning ── */}
+          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-0.5 px-1.5 py-1.5 rounded-full liquid-glass">
+            {NAV_LINKS.map(({ label, href }) => (
+              <a
+                key={href}
+                href={href}
+                onClick={(e) => { e.preventDefault(); handleNavClick(href); }}
+                className="px-4 py-2 text-sm font-medium text-white/80 font-body hover:text-white hover:bg-white/[0.08] rounded-full transition-all duration-200"
+              >
+                {label}
+              </a>
+            ))}
+
+            {/* Separator */}
+            <span className="w-px h-4 bg-white/15 mx-1" />
+
+            {/* CTA inside nav pill */}
+            {user ? (
+              <div className="flex items-center gap-2 pl-1 pr-2">
+                <img
+                  src={user.avatar_url}
+                  alt={user.name}
+                  className="w-6 h-6 rounded-full border border-white/20"
+                />
+                <span className="text-xs font-semibold text-white max-w-[72px] truncate">{user.name}</span>
+                <button
+                  onClick={logout}
+                  className="text-[11px] text-white/40 hover:text-white/80 transition-colors ml-0.5 cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={onOpenAuth}
+                className="flex items-center gap-1.5 bg-white text-black px-4 py-2 text-sm font-semibold rounded-full hover:bg-white/92 active:scale-95 transition-all whitespace-nowrap"
+              >
+                Begin Investigation
+                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="7" />
+                  <line x1="16.5" y1="16.5" x2="21" y2="21" />
+                </svg>
+              </button>
+            )}
           </div>
-        </div>
 
-        {/* Right: Social icon buttons + mobile menu trigger */}
-        <div className="flex items-center gap-2">
-          {/* LinkedIn */}
-          <a
-            href="https://www.linkedin.com/in/karan-shelar-779381343/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Karan Shelar on LinkedIn"
-            className="w-10 h-10 rounded-full liquid-glass flex items-center justify-center text-white/85 hover:text-white hover:scale-105 active:scale-95 transition-all duration-200"
-          >
-            <LinkedinIcon />
-          </a>
+          {/* ── RIGHT: Social icons + Mobile hamburger ── */}
+          <div className="flex items-center gap-2">
+            {/* LinkedIn */}
+            <a
+              href="https://www.linkedin.com/in/karan-shelar-779381343/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Karan Shelar on LinkedIn"
+              className="w-10 h-10 rounded-full liquid-glass flex items-center justify-center text-white/80 hover:text-white hover:scale-105 active:scale-95 transition-all duration-200"
+            >
+              <LinkedinIcon />
+            </a>
 
-          {/* GitHub Profile */}
-          <a
-            href="https://github.com/Edge-Explorer"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Edge-Explorer on GitHub"
-            className="w-10 h-10 rounded-full liquid-glass flex items-center justify-center text-white/85 hover:text-white hover:scale-105 active:scale-95 transition-all duration-200"
-          >
-            <GithubIcon />
-          </a>
+            {/* GitHub Profile */}
+            <a
+              href="https://github.com/Edge-Explorer"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Edge-Explorer on GitHub"
+              className="w-10 h-10 rounded-full liquid-glass flex items-center justify-center text-white/80 hover:text-white hover:scale-105 active:scale-95 transition-all duration-200"
+            >
+              <GithubIcon />
+            </a>
 
-          {/* GitHub Repo */}
-          <a
-            href="https://github.com/Edge-Explorer/AgentBond-AI"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="AgentBond-AI Repository"
-            className="hidden sm:flex w-10 h-10 rounded-full liquid-glass items-center justify-center text-white/85 hover:text-white hover:scale-105 active:scale-95 transition-all duration-200"
-          >
-            <RepoIcon />
-          </a>
+            {/* GitHub Repo */}
+            <a
+              href="https://github.com/Edge-Explorer/AgentBond-AI"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="AgentBond-AI Repository"
+              className="hidden sm:flex w-10 h-10 rounded-full liquid-glass items-center justify-center text-white/80 hover:text-white hover:scale-105 active:scale-95 transition-all duration-200"
+            >
+              <RepoIcon />
+            </a>
 
-          {/* Mobile hamburger */}
-          <button
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label="Toggle mobile menu"
-            className="md:hidden w-10 h-10 rounded-full liquid-glass flex items-center justify-center text-white/85 hover:text-white transition-all"
-          >
-            {menuOpen ? <CloseIcon /> : <MenuIcon />}
-          </button>
+            {/* Mobile hamburger */}
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label="Toggle mobile menu"
+              className="md:hidden w-10 h-10 rounded-full liquid-glass flex items-center justify-center text-white/80 hover:text-white transition-all"
+            >
+              {menuOpen ? <CloseIcon /> : <MenuIcon />}
+            </button>
+          </div>
         </div>
       </motion.nav>
 
-      {/* Mobile Menu Drawer */}
+      {/* ── Mobile Menu Drawer ── */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -180,12 +210,25 @@ export default function Navbar({ onOpenAuth }) {
             transition={{ duration: 0.25, ease: "easeOut" }}
             className="fixed top-20 left-4 right-4 z-40 rounded-[1.5rem] liquid-glass p-4 flex flex-col gap-1 md:hidden"
           >
+            {/* Brand header inside mobile menu */}
+            <div className="flex items-center gap-2.5 px-3 py-2 mb-1">
+              <div className="w-8 h-8 rounded-lg liquid-glass flex items-center justify-center text-white shrink-0">
+                <BondIcon />
+              </div>
+              <div>
+                <div className="text-white font-heading italic text-base leading-none">AgentBond</div>
+                <div className="text-white/40 text-[10px] font-body tracking-widest uppercase leading-none mt-0.5">AI · Multi-Agent</div>
+              </div>
+            </div>
+
+            <div className="h-px bg-white/10 mb-1" />
+
             {NAV_LINKS.map(({ label, href }) => (
               <a
                 key={href}
                 href={href}
                 onClick={(e) => { e.preventDefault(); handleNavClick(href); }}
-                className="px-4 py-3 rounded-xl text-sm font-medium text-white/90 font-body hover:bg-white/8 hover:text-white transition-all"
+                className="px-4 py-3 rounded-xl text-sm font-medium text-white/90 font-body hover:bg-white/[0.08] hover:text-white transition-all"
               >
                 {label}
               </a>
@@ -197,7 +240,7 @@ export default function Navbar({ onOpenAuth }) {
               href="https://www.linkedin.com/in/karan-shelar-779381343/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/90 hover:bg-white/8 hover:text-white transition-all"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/90 hover:bg-white/[0.08] hover:text-white transition-all"
             >
               <LinkedinIcon /> LinkedIn — Karan Shelar
             </a>
@@ -205,7 +248,7 @@ export default function Navbar({ onOpenAuth }) {
               href="https://github.com/Edge-Explorer"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/90 hover:bg-white/8 hover:text-white transition-all"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/90 hover:bg-white/[0.08] hover:text-white transition-all"
             >
               <GithubIcon /> GitHub — Edge-Explorer
             </a>
@@ -213,7 +256,7 @@ export default function Navbar({ onOpenAuth }) {
               href="https://github.com/Edge-Explorer/AgentBond-AI"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/90 hover:bg-white/8 hover:text-white transition-all"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/90 hover:bg-white/[0.08] hover:text-white transition-all"
             >
               <RepoIcon /> AgentBond-AI Repo
             </a>
@@ -234,10 +277,7 @@ export default function Navbar({ onOpenAuth }) {
                   </div>
                 </div>
                 <button
-                  onClick={() => {
-                    logout();
-                    setMenuOpen(false);
-                  }}
+                  onClick={() => { logout(); setMenuOpen(false); }}
                   className="w-full flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 text-white py-2 text-sm font-semibold rounded-lg transition-all"
                 >
                   Logout
@@ -245,10 +285,7 @@ export default function Navbar({ onOpenAuth }) {
               </div>
             ) : (
               <button
-                onClick={() => {
-                  onOpenAuth();
-                  setMenuOpen(false);
-                }}
+                onClick={() => { onOpenAuth(); setMenuOpen(false); }}
                 className="flex items-center justify-center gap-2 bg-white text-black px-4 py-2.5 text-sm font-semibold rounded-full hover:bg-white/90 transition-all"
               >
                 Begin Investigation 🔍
