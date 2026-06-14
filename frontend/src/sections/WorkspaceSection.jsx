@@ -1,6 +1,49 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const AgentBondWatermark = ({ size = 200, className = "" }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 120 120"
+    xmlns="http://www.w3.org/2000/svg"
+    className={`pointer-events-none select-none ${className}`}
+  >
+    {/* Subtle violet glow */}
+    <ellipse cx="55" cy="52" rx="46" ry="44" fill="#7C5CFC" fillOpacity="0.12"/>
+    {/* Outer soft ring */}
+    <circle cx="54" cy="52" r="36" fill="none" stroke="#7C5CFC" strokeWidth="6" strokeOpacity="0.15"/>
+    {/* Rim — glass edge */}
+    <circle cx="54" cy="52" r="33" fill="none" stroke="white" strokeWidth="1.5" strokeOpacity="0.35"/>
+    {/* Lens fill — frosted glass */}
+    <circle cx="54" cy="52" r="31" fill="white" fillOpacity="0.05"/>
+    {/* Highlight flare */}
+    <ellipse cx="42" cy="41" rx="9" ry="5" fill="white" fillOpacity="0.08" transform="rotate(-30 42 41)"/>
+    {/* Center node */}
+    <circle cx="54" cy="52" r="4" fill="white" opacity="0.95"/>
+    <circle cx="54" cy="52" r="7" fill="none" stroke="white" strokeWidth="0.8" strokeOpacity="0.3"/>
+    {/* Satellite nodes */}
+    <circle cx="40" cy="40" r="2.8" fill="#7C5CFC" opacity="0.95"/>
+    <circle cx="69" cy="40" r="2.8" fill="#4FC3F7" opacity="0.95"/>
+    <circle cx="37" cy="55" r="2.2" fill="white" opacity="0.55"/>
+    <circle cx="72" cy="58" r="2.2" fill="white" opacity="0.55"/>
+    <circle cx="54" cy="33" r="2.2" fill="white" opacity="0.5"/>
+    <circle cx="51" cy="67" r="1.8" fill="#7C5CFC" opacity="0.7"/>
+    {/* Neural edges */}
+    <line x1="54" y1="52" x2="40" y2="40" stroke="white" strokeWidth="0.8" strokeOpacity="0.4"/>
+    <line x1="54" y1="52" x2="69" y2="40" stroke="#4FC3F7" strokeWidth="0.8" strokeOpacity="0.5"/>
+    <line x1="54" y1="52" x2="37" y2="55" stroke="white" strokeWidth="0.7" strokeOpacity="0.3"/>
+    <line x1="54" y1="52" x2="72" y2="58" stroke="white" strokeWidth="0.7" strokeOpacity="0.3"/>
+    <line x1="54" y1="52" x2="54" y2="33" stroke="white" strokeWidth="0.7" strokeOpacity="0.28"/>
+    <line x1="54" y1="52" x2="51" y2="67" stroke="#7C5CFC" strokeWidth="0.7" strokeOpacity="0.4"/>
+    <line x1="40" y1="40" x2="54" y2="33" stroke="white" strokeWidth="0.5" strokeOpacity="0.2"/>
+    <line x1="69" y1="40" x2="54" y2="33" stroke="#4FC3F7" strokeWidth="0.5" strokeOpacity="0.25"/>
+    {/* Handle */}
+    <line x1="80" y1="78" x2="100" y2="98" stroke="white" strokeWidth="5.5" strokeLinecap="round" strokeOpacity="0.6"/>
+    <line x1="79" y1="77" x2="99" y2="97" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.35"/>
+  </svg>
+);
+
 export default function WorkspaceSection({ onBackToLanding }) {
   const [cases, setCases] = useState([]);
   const [selectedCaseId, setSelectedCaseId] = useState(null);
@@ -185,7 +228,7 @@ export default function WorkspaceSection({ onBackToLanding }) {
   return (
     <section className="relative w-screen min-h-screen pt-24 pb-12 px-6 lg:px-12 flex gap-6 z-10 text-white selection:bg-[#7C5CFC]/30 selection:text-white">
       {/* ── SIDEBAR: PAST CASES ── */}
-      <div className="w-80 rounded-[1.25rem] bg-[#0a0a0c]/85 border border-white/10 backdrop-blur-2xl shadow-[0_24px_80px_rgba(0,0,0,0.6)] flex flex-col p-5 h-[calc(100vh-140px)] shrink-0">
+      <div className="w-80 rounded-[1.25rem] bg-[#0a0a0c]/85 border border-white/10 backdrop-blur-2xl shadow-[0_24px_80px_rgba(0,0,0,0.6)] flex flex-col p-5 h-[calc(100vh-140px)] shrink-0 relative overflow-hidden">
         <div className="flex items-center justify-between mb-6">
           <h2 className="font-heading italic text-2xl tracking-tight text-white/90">Investigation nodes</h2>
           <button
@@ -259,10 +302,12 @@ export default function WorkspaceSection({ onBackToLanding }) {
             ← Back to Landing
           </button>
         </div>
+        {/* Sidebar Watermark */}
+        <AgentBondWatermark size={140} className="absolute bottom-20 -right-6 opacity-[0.04] z-0 pointer-events-none" />
       </div>
 
       {/* ── MAIN WORKSPACE ── */}
-      <div className="flex-1 rounded-[1.25rem] bg-[#09090b]/85 border border-white/10 backdrop-blur-2xl shadow-[0_24px_80px_rgba(0,0,0,0.6)] flex flex-col p-8 h-[calc(100vh-140px)] overflow-y-auto scrollbar-thin">
+      <div className="flex-1 rounded-[1.25rem] bg-[#09090b]/85 border border-white/10 backdrop-blur-2xl shadow-[0_24px_80px_rgba(0,0,0,0.6)] flex flex-col p-8 h-[calc(100vh-140px)] overflow-y-auto scrollbar-thin relative overflow-hidden">
         <AnimatePresence mode="wait">
           {isCreatingNew ? (
             /* CREATE CASE WORKSPACE */
@@ -628,6 +673,8 @@ export default function WorkspaceSection({ onBackToLanding }) {
             </motion.div>
           )}
         </AnimatePresence>
+        {/* Main Workspace Watermark */}
+        <AgentBondWatermark size={240} className="absolute bottom-6 right-6 opacity-[0.03] z-0 pointer-events-none" />
       </div>
     </section>
   );
