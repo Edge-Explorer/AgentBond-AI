@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
-import agentbondIcon from "../assets/agentbond-icon.svg";
-import agentbondLockup from "../assets/agentbond-lockup.svg";
 
 const NAV_LINKS = [
   { label: "Home", href: "#home" },
@@ -44,12 +42,61 @@ const CloseIcon = () => (
   </svg>
 );
 
-// Tiny bond/link icon for the logo
-const BondIcon = () => (
-  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-  </svg>
+// Inline neural magnifying glass — transparent bg, blends with page
+const AgentBondLogo = ({ className = "" }) => (
+  <div className={`flex items-center gap-2.5 ${className}`}>
+    {/* Icon: transparent neural magnifying glass */}
+    <svg
+      width="36" height="36" viewBox="0 0 120 120"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      className="shrink-0 drop-shadow-[0_0_8px_rgba(124,92,252,0.5)]"
+    >
+      {/* Subtle violet glow */}
+      <ellipse cx="55" cy="52" rx="46" ry="44" fill="#7C5CFC" fillOpacity="0.12"/>
+      {/* Outer soft ring */}
+      <circle cx="54" cy="52" r="36" fill="none" stroke="#7C5CFC" strokeWidth="6" strokeOpacity="0.15"/>
+      {/* Rim — glass edge */}
+      <circle cx="54" cy="52" r="33" fill="none" stroke="white" strokeWidth="1.5" strokeOpacity="0.35"/>
+      {/* Lens fill — frosted glass */}
+      <circle cx="54" cy="52" r="31" fill="white" fillOpacity="0.05"/>
+      {/* Highlight flare */}
+      <ellipse cx="42" cy="41" rx="9" ry="5" fill="white" fillOpacity="0.08" transform="rotate(-30 42 41)"/>
+      {/* Center node */}
+      <circle cx="54" cy="52" r="4" fill="white" opacity="0.95"/>
+      <circle cx="54" cy="52" r="7" fill="none" stroke="white" strokeWidth="0.8" strokeOpacity="0.3"/>
+      {/* Satellite nodes */}
+      <circle cx="40" cy="40" r="2.8" fill="#7C5CFC" opacity="0.95"/>
+      <circle cx="69" cy="40" r="2.8" fill="#4FC3F7" opacity="0.95"/>
+      <circle cx="37" cy="55" r="2.2" fill="white" opacity="0.55"/>
+      <circle cx="72" cy="58" r="2.2" fill="white" opacity="0.55"/>
+      <circle cx="54" cy="33" r="2.2" fill="white" opacity="0.5"/>
+      <circle cx="51" cy="67" r="1.8" fill="#7C5CFC" opacity="0.7"/>
+      {/* Neural edges */}
+      <line x1="54" y1="52" x2="40" y2="40" stroke="white" strokeWidth="0.8" strokeOpacity="0.4"/>
+      <line x1="54" y1="52" x2="69" y2="40" stroke="#4FC3F7" strokeWidth="0.8" strokeOpacity="0.5"/>
+      <line x1="54" y1="52" x2="37" y2="55" stroke="white" strokeWidth="0.7" strokeOpacity="0.3"/>
+      <line x1="54" y1="52" x2="72" y2="58" stroke="white" strokeWidth="0.7" strokeOpacity="0.3"/>
+      <line x1="54" y1="52" x2="54" y2="33" stroke="white" strokeWidth="0.7" strokeOpacity="0.28"/>
+      <line x1="54" y1="52" x2="51" y2="67" stroke="#7C5CFC" strokeWidth="0.7" strokeOpacity="0.4"/>
+      <line x1="40" y1="40" x2="54" y2="33" stroke="white" strokeWidth="0.5" strokeOpacity="0.2"/>
+      <line x1="69" y1="40" x2="54" y2="33" stroke="#4FC3F7" strokeWidth="0.5" strokeOpacity="0.25"/>
+      {/* Handle */}
+      <line x1="80" y1="78" x2="100" y2="98" stroke="white" strokeWidth="5.5" strokeLinecap="round" strokeOpacity="0.6"/>
+      <line x1="79" y1="77" x2="99" y2="97" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.35"/>
+    </svg>
+
+    {/* Wordmark */}
+    <div className="hidden sm:flex flex-col leading-none select-none">
+      <span className="text-white font-heading italic text-[1.15rem] tracking-tight leading-none"
+        style={{ textShadow: "0 0 20px rgba(124,92,252,0.4)" }}>
+        AgentBond
+      </span>
+      <span className="text-white/35 text-[0.58rem] font-body font-medium tracking-[0.2em] uppercase leading-none mt-[3px]">
+        AI · Multi-Agent
+      </span>
+    </div>
+  </div>
 );
 
 export default function Navbar({ onOpenAuth }) {
@@ -82,27 +129,16 @@ export default function Navbar({ onOpenAuth }) {
         {/* 3-column grid: [Logo] [Nav Pill centered] [Icons] */}
         <div className="grid grid-cols-3 items-center w-full">
 
-          {/* ── COL 1: Logo / Wordmark ── */}
+          {/* ── COL 1: Logo ── */}
           <a
             href="#home"
             onClick={(e) => { e.preventDefault(); handleNavClick("#home"); }}
-            className="flex items-center select-none group justify-self-start hover:opacity-90 transition-opacity duration-200"
+            className="justify-self-start hover:opacity-85 transition-opacity duration-200"
             aria-label="AgentBond AI — Go to home"
           >
-            {/* Icon only — shown on mobile */}
-            <img
-              src={agentbondIcon}
-              alt="AgentBond AI"
-              className="w-10 h-10 rounded-xl sm:hidden group-hover:scale-105 transition-transform duration-200"
-            />
-            {/* Full lockup — shown on sm+ */}
-            <img
-              src={agentbondLockup}
-              alt="AgentBond AI"
-              className="hidden sm:block h-10 w-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-200"
-              style={{ maxWidth: '220px' }}
-            />
+            <AgentBondLogo />
           </a>
+
 
           {/* ── COL 2: Nav pill — guaranteed screen center ── */}
           <div className="hidden md:flex justify-center">
@@ -211,13 +247,8 @@ export default function Navbar({ onOpenAuth }) {
             className="fixed top-20 left-4 right-4 z-40 rounded-[1.5rem] liquid-glass p-4 flex flex-col gap-1 md:hidden"
           >
             {/* Brand header inside mobile menu */}
-            <div className="flex items-center px-2 py-1 mb-1">
-              <img
-                src={agentbondLockup}
-                alt="AgentBond AI"
-                className="h-9 w-auto rounded-md"
-                style={{ maxWidth: '200px' }}
-              />
+            <div className="px-2 py-1 mb-1">
+              <AgentBondLogo />
             </div>
 
             <div className="h-px bg-white/10 mb-1" />
