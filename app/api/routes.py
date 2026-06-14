@@ -82,3 +82,16 @@ def decompose_case(case_id: str, db: Session = Depends(get_db)):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to queue agent task: {str(e)}"
         )
+
+@router.get("", response_model=List[CaseContext])
+def get_cases(limit: int = 20, db: Session = Depends(get_db)):
+    """
+    Retrieves all investigation cases in the database.
+    """
+    try:
+        return ContextManager.get_all_contexts(db=db, limit=limit)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to fetch cases: {str(e)}"
+        )

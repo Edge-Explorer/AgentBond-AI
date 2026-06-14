@@ -210,3 +210,16 @@ class ContextManager:
             db.commit()
             db.refresh(hyp_db)
         return hyp_db
+
+    @staticmethod
+    def get_all_contexts(db: Session, limit: int = 20) -> List[CaseContext]:
+        """
+        Retrieves a list of all case contexts in the database.
+        """
+        cases_db = db.query(CaseContextModel).order_by(CaseContextModel.updated_at.desc()).limit(limit).all()
+        result = []
+        for case_db in cases_db:
+            ctx = ContextManager.get_context(db, case_db.case_id)
+            if ctx:
+                result.append(ctx)
+        return result
