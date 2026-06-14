@@ -1,0 +1,69 @@
+<svg width="120" height="120" viewBox="0 0 120 120" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>AgentBond AI Icon</title>
+  <desc>Magnifying glass with neural circuit mesh — AgentBond AI icon mark</desc>
+  <defs>
+    <radialGradient id="glowViolet" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7C5CFC" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#7C5CFC" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lensGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.13"/>
+      <stop offset="100%" stop-color="#7C5CFC" stop-opacity="0.07"/>
+    </linearGradient>
+    <linearGradient id="rimGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="60%" stop-color="#9E8EFD" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#4FC3F7" stop-opacity="0.3"/>
+    </linearGradient>
+    <linearGradient id="handleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#7C5CFC" stop-opacity="0.5"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background (delete this rect for transparent bg) -->
+  <rect width="120" height="120" fill="#080808" rx="20"/>
+
+  <!-- Ambient glow -->
+  <ellipse cx="55" cy="52" rx="48" ry="46" fill="url(#glowViolet)"/>
+
+  <!-- Outer glow ring -->
+  <circle cx="54" cy="52" r="36" fill="none" stroke="#7C5CFC" stroke-width="7" stroke-opacity="0.12"/>
+  <!-- Rim -->
+  <circle cx="54" cy="52" r="33" fill="none" stroke="url(#rimGrad)" stroke-width="1.8"/>
+  <!-- Glass lens -->
+  <circle cx="54" cy="52" r="31" fill="url(#lensGrad)"/>
+  <!-- Inner edge -->
+  <circle cx="54" cy="52" r="31" fill="none" stroke="#FFFFFF" stroke-width="0.5" stroke-opacity="0.15"/>
+
+  <!-- Highlight flare -->
+  <ellipse cx="42" cy="41" rx="9" ry="5" fill="#FFFFFF" fill-opacity="0.06" transform="rotate(-30 42 41)"/>
+
+  <!-- Center node -->
+  <circle cx="54" cy="52" r="4" fill="#FFFFFF" opacity="0.95"/>
+  <circle cx="54" cy="52" r="7" fill="none" stroke="#FFFFFF" stroke-width="0.8" stroke-opacity="0.25"/>
+
+  <!-- Satellite nodes -->
+  <circle cx="40" cy="40" r="2.8" fill="#7C5CFC" opacity="0.9"/>
+  <circle cx="69" cy="40" r="2.8" fill="#4FC3F7" opacity="0.9"/>
+  <circle cx="37" cy="55" r="2.2" fill="#FFFFFF" opacity="0.55"/>
+  <circle cx="72" cy="58" r="2.2" fill="#FFFFFF" opacity="0.55"/>
+  <circle cx="54" cy="33" r="2.2" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="51" cy="67" r="1.8" fill="#7C5CFC" opacity="0.7"/>
+
+  <!-- Neural edges -->
+  <line x1="54" y1="52" x2="40" y2="40" stroke="#FFFFFF" stroke-width="0.8" stroke-opacity="0.45"/>
+  <line x1="54" y1="52" x2="69" y2="40" stroke="#4FC3F7" stroke-width="0.8" stroke-opacity="0.5"/>
+  <line x1="54" y1="52" x2="37" y2="55" stroke="#FFFFFF" stroke-width="0.7" stroke-opacity="0.35"/>
+  <line x1="54" y1="52" x2="72" y2="58" stroke="#FFFFFF" stroke-width="0.7" stroke-opacity="0.35"/>
+  <line x1="54" y1="52" x2="54" y2="33" stroke="#FFFFFF" stroke-width="0.7" stroke-opacity="0.3"/>
+  <line x1="54" y1="52" x2="51" y2="67" stroke="#7C5CFC" stroke-width="0.7" stroke-opacity="0.4"/>
+  <line x1="40" y1="40" x2="54" y2="33" stroke="#FFFFFF" stroke-width="0.5" stroke-opacity="0.2"/>
+  <line x1="69" y1="40" x2="54" y2="33" stroke="#4FC3F7" stroke-width="0.5" stroke-opacity="0.25"/>
+  <line x1="40" y1="40" x2="37" y2="55" stroke="#FFFFFF" stroke-width="0.5" stroke-opacity="0.18"/>
+
+  <!-- Handle -->
+  <line x1="80" y1="78" x2="100" y2="98" stroke="url(#handleGrad)" stroke-width="5.5" stroke-linecap="round"/>
+  <!-- Handle highlight -->
+  <line x1="79" y1="77" x2="99" y2="97" stroke="#FFFFFF" stroke-width="1.3" stroke-linecap="round" stroke-opacity="0.45"/>
+</svg>

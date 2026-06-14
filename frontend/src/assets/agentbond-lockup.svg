@@ -1,0 +1,110 @@
+<svg width="520" height="72" viewBox="0 0 520 72" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>AgentBond AI — Full Horizontal Lockup</title>
+  <desc>AgentBond AI logo with icon mark and wordmark side by side on dark background</desc>
+  <defs>
+    <radialGradient id="glowViolet2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7C5CFC" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#7C5CFC" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lensGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.13"/>
+      <stop offset="100%" stop-color="#7C5CFC" stop-opacity="0.07"/>
+    </linearGradient>
+    <linearGradient id="rimGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="60%" stop-color="#9E8EFD" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#4FC3F7" stop-opacity="0.3"/>
+    </linearGradient>
+    <linearGradient id="handleGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#7C5CFC" stop-opacity="0.5"/>
+    </linearGradient>
+    <linearGradient id="wordmarkGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="80%" stop-color="#E8E4FF"/>
+      <stop offset="100%" stop-color="#C4B5FD"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background (delete this rect for transparent bg) -->
+  <rect width="520" height="72" fill="#080808" rx="12"/>
+
+  <!-- Ambient glow behind icon -->
+  <ellipse cx="36" cy="34" rx="34" ry="32" fill="url(#glowViolet2)"/>
+
+  <!-- Outer glow ring -->
+  <circle cx="35" cy="33" r="23" fill="none" stroke="#7C5CFC" stroke-width="5" stroke-opacity="0.12"/>
+  <!-- Rim -->
+  <circle cx="35" cy="33" r="20" fill="none" stroke="url(#rimGrad2)" stroke-width="1.4"/>
+  <!-- Glass lens -->
+  <circle cx="35" cy="33" r="18.5" fill="url(#lensGrad2)"/>
+  <circle cx="35" cy="33" r="18.5" fill="none" stroke="#FFFFFF" stroke-width="0.4" stroke-opacity="0.13"/>
+
+  <!-- Highlight flare -->
+  <ellipse cx="27" cy="26" rx="6" ry="3.5" fill="#FFFFFF" fill-opacity="0.06" transform="rotate(-30 27 26)"/>
+
+  <!-- Center node -->
+  <circle cx="35" cy="33" r="2.8" fill="#FFFFFF" opacity="0.95"/>
+  <circle cx="35" cy="33" r="5" fill="none" stroke="#FFFFFF" stroke-width="0.7" stroke-opacity="0.2"/>
+
+  <!-- Satellite nodes -->
+  <circle cx="25" cy="24" r="1.9" fill="#7C5CFC" opacity="0.9"/>
+  <circle cx="46" cy="24" r="1.9" fill="#4FC3F7" opacity="0.9"/>
+  <circle cx="23" cy="35" r="1.5" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="47" cy="37" r="1.5" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="35" cy="20" r="1.5" fill="#FFFFFF" opacity="0.45"/>
+  <circle cx="33" cy="44" r="1.2" fill="#7C5CFC" opacity="0.65"/>
+
+  <!-- Neural edges -->
+  <line x1="35" y1="33" x2="25" y2="24" stroke="#FFFFFF" stroke-width="0.7" stroke-opacity="0.45"/>
+  <line x1="35" y1="33" x2="46" y2="24" stroke="#4FC3F7" stroke-width="0.7" stroke-opacity="0.5"/>
+  <line x1="35" y1="33" x2="23" y2="35" stroke="#FFFFFF" stroke-width="0.6" stroke-opacity="0.3"/>
+  <line x1="35" y1="33" x2="47" y2="37" stroke="#FFFFFF" stroke-width="0.6" stroke-opacity="0.3"/>
+  <line x1="35" y1="33" x2="35" y2="20" stroke="#FFFFFF" stroke-width="0.6" stroke-opacity="0.28"/>
+  <line x1="35" y1="33" x2="33" y2="44" stroke="#7C5CFC" stroke-width="0.6" stroke-opacity="0.38"/>
+  <line x1="25" y1="24" x2="35" y2="20" stroke="#FFFFFF" stroke-width="0.4" stroke-opacity="0.18"/>
+  <line x1="46" y1="24" x2="35" y2="20" stroke="#4FC3F7" stroke-width="0.4" stroke-opacity="0.22"/>
+  <line x1="25" y1="24" x2="23" y2="35" stroke="#FFFFFF" stroke-width="0.4" stroke-opacity="0.15"/>
+
+  <!-- Handle -->
+  <line x1="50" y1="48" x2="62" y2="60" stroke="url(#handleGrad2)" stroke-width="4" stroke-linecap="round"/>
+  <!-- Handle highlight -->
+  <line x1="49" y1="47" x2="61" y2="59" stroke="#FFFFFF" stroke-width="0.9" stroke-linecap="round" stroke-opacity="0.42"/>
+
+  <!-- Wordmark -->
+  <text
+    x="80" y="28"
+    font-family="'SF Pro Display', -apple-system, 'Helvetica Neue', Arial, sans-serif"
+    font-size="28"
+    font-weight="700"
+    font-style="italic"
+    fill="url(#wordmarkGrad)"
+    letter-spacing="-0.5"
+  >AgentBond</text>
+
+  <!-- AI badge -->
+  <rect x="367" y="8" width="27" height="16" rx="4" fill="none" stroke="#7C5CFC" stroke-width="0.9" stroke-opacity="0.7"/>
+  <text
+    x="380" y="20"
+    text-anchor="middle"
+    font-family="'SF Pro Display', -apple-system, 'Helvetica Neue', Arial, sans-serif"
+    font-size="9"
+    font-weight="600"
+    fill="#A78BFA"
+    letter-spacing="0.5"
+  >AI</text>
+
+  <!-- Separator -->
+  <line x1="80" y1="36" x2="500" y2="36" stroke="#FFFFFF" stroke-width="0.35" stroke-opacity="0.12"/>
+
+  <!-- Tagline -->
+  <text
+    x="80" y="52"
+    font-family="'SF Pro Display', -apple-system, 'Helvetica Neue', Arial, sans-serif"
+    font-size="8.5"
+    font-weight="400"
+    fill="#FFFFFF"
+    fill-opacity="0.32"
+    letter-spacing="2.5"
+  >MULTI-AGENT INVESTIGATION ENGINE</text>
+</svg>

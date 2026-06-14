@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
+import agentbondIcon from "../assets/agentbond-icon.svg";
+import agentbondLockup from "../assets/agentbond-lockup.svg";
 
 const NAV_LINKS = [
   { label: "Home", href: "#home" },
@@ -84,25 +86,22 @@ export default function Navbar({ onOpenAuth }) {
           <a
             href="#home"
             onClick={(e) => { e.preventDefault(); handleNavClick("#home"); }}
-            className="flex items-center gap-2.5 select-none group justify-self-start"
+            className="flex items-center select-none group justify-self-start hover:opacity-90 transition-opacity duration-200"
             aria-label="AgentBond AI — Go to home"
           >
-            {/* Icon badge */}
-            <div className="w-10 h-10 rounded-xl liquid-glass flex items-center justify-center text-white group-hover:scale-105 transition-transform duration-200 shrink-0">
-              <BondIcon />
-            </div>
-
-            {/* Wordmark — hidden on very small screens */}
-            <div className="hidden sm:flex flex-col leading-none">
-              <span
-                className="text-white font-heading italic text-[1.1rem] tracking-[-0.02em] leading-none"
-              >
-                AgentBond
-              </span>
-              <span className="text-white/40 text-[0.6rem] font-body font-medium tracking-[0.18em] uppercase leading-none mt-0.5">
-                AI · Multi-Agent
-              </span>
-            </div>
+            {/* Icon only — shown on mobile */}
+            <img
+              src={agentbondIcon}
+              alt="AgentBond AI"
+              className="w-10 h-10 rounded-xl sm:hidden group-hover:scale-105 transition-transform duration-200"
+            />
+            {/* Full lockup — shown on sm+ */}
+            <img
+              src={agentbondLockup}
+              alt="AgentBond AI"
+              className="hidden sm:block h-10 w-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-200"
+              style={{ maxWidth: '220px' }}
+            />
           </a>
 
           {/* ── COL 2: Nav pill — guaranteed screen center ── */}
@@ -212,14 +211,13 @@ export default function Navbar({ onOpenAuth }) {
             className="fixed top-20 left-4 right-4 z-40 rounded-[1.5rem] liquid-glass p-4 flex flex-col gap-1 md:hidden"
           >
             {/* Brand header inside mobile menu */}
-            <div className="flex items-center gap-2.5 px-3 py-2 mb-1">
-              <div className="w-8 h-8 rounded-lg liquid-glass flex items-center justify-center text-white shrink-0">
-                <BondIcon />
-              </div>
-              <div>
-                <div className="text-white font-heading italic text-base leading-none">AgentBond</div>
-                <div className="text-white/40 text-[10px] font-body tracking-widest uppercase leading-none mt-0.5">AI · Multi-Agent</div>
-              </div>
+            <div className="flex items-center px-2 py-1 mb-1">
+              <img
+                src={agentbondLockup}
+                alt="AgentBond AI"
+                className="h-9 w-auto rounded-md"
+                style={{ maxWidth: '200px' }}
+              />
             </div>
 
             <div className="h-px bg-white/10 mb-1" />
