@@ -117,6 +117,28 @@ export default function WorkspaceSection({ onBackToLanding }) {
   const [activeCase, setActiveCase] = useState(null);
   const [loadingCases, setLoadingCases] = useState(true);
 
+  // Hidden cases state for local deletion/hiding
+  const [hiddenCaseIds, setHiddenCaseIds] = useState(() => {
+    try {
+      const stored = localStorage.getItem("hidden_case_ids");
+      return stored ? JSON.parse(stored) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const handleHideCase = (caseId) => {
+    const updated = [...hiddenCaseIds, caseId];
+    setHiddenCaseIds(updated);
+    localStorage.setItem("hidden_case_ids", JSON.stringify(updated));
+    if (selectedCaseId === caseId) {
+      setSelectedCaseId(null);
+      setIsCreatingNew(true);
+    }
+  };
+
+  const visibleCases = cases.filter((c) => !hiddenCaseIds.includes(c.case_id));
+
   // Accordion state for hypotheses
   const [expandedHypothesisId, setExpandedHypothesisId] = useState(null);
 
@@ -316,23 +338,37 @@ export default function WorkspaceSection({ onBackToLanding }) {
             <div className="flex items-center justify-center py-10 text-white/30 text-xs tracking-wider uppercase">
               Accessing Context Store...
             </div>
-          ) : cases.length === 0 ? (
+          ) : visibleCases.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center text-white/30 text-xs px-2">
               <span className="text-xl mb-2">📁</span>
               No investigation sessions stored yet.
             </div>
           ) : (
-            cases.map((c) => (
-              <button
+            visibleCases.map((c) => (
+              <div
                 key={c.case_id}
                 onClick={() => handleSelectCase(c.case_id)}
-                className={`w-full text-left p-4 rounded-xl border transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 ${
+                className={`w-full text-left p-4 rounded-xl border transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 relative group ${
                   selectedCaseId === c.case_id
                     ? "bg-[#7C5CFC]/10 border-[#7C5CFC]/40 shadow-lg shadow-[#7C5CFC]/5"
                     : "bg-white/[0.02] border-white/5 hover:bg-white/[0.04] hover:border-white/10"
                 }`}
               >
-                <span className="text-xs font-body font-light text-white/90 line-clamp-2 leading-relaxed">
+                {/* Delete button (client-side hide) */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleHideCase(c.case_id);
+                  }}
+                  className="absolute top-3.5 right-3.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-red-400 z-20 cursor-pointer"
+                  title="Hide investigation"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+
+                <span className="text-xs font-body font-light text-white/90 line-clamp-2 leading-relaxed pr-6">
                   {c.problem_statement}
                 </span>
 
@@ -355,7 +391,7 @@ export default function WorkspaceSection({ onBackToLanding }) {
                     {c.status}
                   </span>
                 </div>
-              </button>
+              </div>
             ))
           )}
         </div>
