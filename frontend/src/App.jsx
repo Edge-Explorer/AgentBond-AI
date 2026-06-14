@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import Navbar from "./components/Navbar";
 import HeroSection from "./sections/HeroSection";
 import CapabilitiesSection from "./sections/CapabilitiesSection";
+import WorkspaceSection from "./sections/WorkspaceSection";
 import FadingVideo from "./components/FadingVideo";
 import { AuthProvider } from "./context/AuthContext";
 import AuthModal from "./components/AuthModal";
 
 function MainAppContent() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [view, setView] = useState("landing"); // 'landing' | 'workspace'
 
   return (
     <div className="relative w-screen bg-black text-white selection:bg-white selection:text-black min-h-screen">
@@ -21,13 +23,36 @@ function MainAppContent() {
       </div>
 
       {/* Shared Navigation Header */}
-      <Navbar onOpenAuth={() => setIsAuthModalOpen(true)} />
+      <Navbar
+        onOpenAuth={() => setIsAuthModalOpen(true)}
+        currentView={view}
+        onViewChange={(newView, hash) => {
+          setView(newView);
+          if (newView === "landing" && hash) {
+            setTimeout(() => {
+              const el = document.querySelector(hash);
+              if (el) el.scrollIntoView({ behavior: "smooth" });
+            }, 50);
+          }
+        }}
+      />
 
-      {/* Hero Section (Section 1) */}
-      <HeroSection onOpenAuth={() => setIsAuthModalOpen(true)} />
+      {/* View router */}
+      {view === "landing" ? (
+        <>
+          {/* Hero Section (Section 1) */}
+          <HeroSection
+            onOpenAuth={() => setIsAuthModalOpen(true)}
+            onViewWorkspace={() => setView("workspace")}
+          />
 
-      {/* Capabilities Section (Section 2) */}
-      <CapabilitiesSection />
+          {/* Capabilities Section (Section 2) */}
+          <CapabilitiesSection />
+        </>
+      ) : (
+        /* Workspace / Chat Section */
+        <WorkspaceSection onBackToLanding={() => setView("landing")} />
+      )}
 
       {/* Auth Modal */}
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />

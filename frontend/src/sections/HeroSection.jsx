@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import BlurText from "../components/BlurText";
 import { useAuth } from "../context/AuthContext";
 
-export default function HeroSection({ onOpenAuth }) {
+export default function HeroSection({ onOpenAuth, onViewWorkspace }) {
   const { user } = useAuth();
   const containerVariants = {
     initial: {},
@@ -109,7 +109,7 @@ export default function HeroSection({ onOpenAuth }) {
           <button
             onClick={() => {
               if (user) {
-                alert(`Welcome back, ${user.name || 'Agent'}. Accessing secure investigation node...`);
+                if (onViewWorkspace) onViewWorkspace();
               } else {
                 onOpenAuth();
               }

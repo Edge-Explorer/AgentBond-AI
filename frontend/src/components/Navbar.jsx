@@ -96,7 +96,7 @@ const AgentBondLogo = ({ className = "" }) => (
   </div>
 );
 
-export default function Navbar({ onOpenAuth }) {
+export default function Navbar({ onOpenAuth, currentView, onViewChange }) {
   const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -115,6 +115,12 @@ export default function Navbar({ onOpenAuth }) {
     }
   };
 
+  const links = [
+    { label: "Home", href: "#home", view: "landing" },
+    { label: "Capabilities", href: "#capabilities", view: "landing" },
+    ...(user ? [{ label: "Workspace", href: "#workspace", view: "workspace" }] : []),
+  ];
+
   return (
     <>
       <motion.nav
@@ -129,7 +135,14 @@ export default function Navbar({ onOpenAuth }) {
           {/* ── COL 1: Logo ── */}
           <a
             href="#home"
-            onClick={(e) => { e.preventDefault(); handleNavClick("#home"); }}
+            onClick={(e) => {
+              e.preventDefault();
+              if (onViewChange) {
+                onViewChange("landing", "#home");
+              } else {
+                handleNavClick("#home");
+              }
+            }}
             className="justify-self-start hover:opacity-85 transition-opacity duration-200"
             aria-label="AgentBond AI — Go to home"
           >
@@ -140,14 +153,25 @@ export default function Navbar({ onOpenAuth }) {
           {/* ── COL 2: Nav pill — guaranteed screen center ── */}
           <div className="hidden md:flex justify-center">
             <div className="flex items-center gap-0.5 px-1.5 py-1.5 rounded-full liquid-glass">
-              {NAV_LINKS.map(({ label, href }) => (
+              {links.map((item) => (
                 <a
-                  key={href}
-                  href={href}
-                  onClick={(e) => { e.preventDefault(); handleNavClick(href); }}
-                  className="px-4 py-2 text-sm font-medium text-white/80 font-body hover:text-white hover:bg-white/[0.08] rounded-full transition-all duration-200"
+                  key={item.href}
+                  href={item.href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (onViewChange) {
+                      onViewChange(item.view, item.href);
+                    } else {
+                      handleNavClick(item.href);
+                    }
+                  }}
+                  className={`px-4 py-2 text-sm font-medium font-body rounded-full transition-all duration-200 ${
+                    currentView === item.view
+                      ? "text-white bg-white/[0.08]"
+                      : "text-white/80 hover:text-white hover:bg-white/[0.08]"
+                  }`}
                 >
-                  {label}
+                  {item.label}
                 </a>
               ))}
 
@@ -186,45 +210,43 @@ export default function Navbar({ onOpenAuth }) {
           </div>
 
           {/* ── COL 3: Social icons + Mobile hamburger ── */}
-          <div className="flex items-center gap-2 justify-self-end">
-            {/* LinkedIn */}
+          <div className="hidden md:flex items-center justify-self-end gap-3">
             <a
               href="https://www.linkedin.com/in/karan-shelar-779381343/"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Karan Shelar on LinkedIn"
-              className="w-10 h-10 rounded-full liquid-glass flex items-center justify-center text-white/80 hover:text-white hover:scale-105 active:scale-95 transition-all duration-200"
+              className="w-8 h-8 rounded-full border border-white/10 hover:border-white/20 hover:bg-white/[0.05] flex items-center justify-center text-white/70 hover:text-white transition-all duration-200"
+              title="LinkedIn Profile"
             >
               <LinkedinIcon />
             </a>
-
-            {/* GitHub Profile */}
             <a
               href="https://github.com/Edge-Explorer"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Edge-Explorer on GitHub"
-              className="w-10 h-10 rounded-full liquid-glass flex items-center justify-center text-white/80 hover:text-white hover:scale-105 active:scale-95 transition-all duration-200"
+              className="w-8 h-8 rounded-full border border-white/10 hover:border-white/20 hover:bg-white/[0.05] flex items-center justify-center text-white/70 hover:text-white transition-all duration-200"
+              title="Github Profile"
             >
               <GithubIcon />
             </a>
-
-            {/* GitHub Repo */}
             <a
               href="https://github.com/Edge-Explorer/AgentBond-AI"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="AgentBond-AI Repository"
-              className="hidden sm:flex w-10 h-10 rounded-full liquid-glass items-center justify-center text-white/80 hover:text-white hover:scale-105 active:scale-95 transition-all duration-200"
+              className="w-8 h-8 rounded-full border border-white/10 hover:border-white/20 hover:bg-white/[0.05] flex items-center justify-center text-white/70 hover:text-white transition-all duration-200"
+              title="Repository"
             >
               <RepoIcon />
             </a>
+          </div>
 
-            {/* Mobile hamburger */}
+          {/* ── Mobile Menu toggle button ── */}
+          <div className="col-start-3 justify-self-end md:hidden flex items-center">
             <button
-              onClick={() => setMenuOpen((v) => !v)}
-              aria-label="Toggle mobile menu"
-              className="md:hidden w-10 h-10 rounded-full liquid-glass flex items-center justify-center text-white/80 hover:text-white transition-all"
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="p-2 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors text-white/80 hover:text-white"
+              aria-expanded={menuOpen}
+              aria-label="Toggle menu"
             >
               {menuOpen ? <CloseIcon /> : <MenuIcon />}
             </button>
@@ -250,14 +272,26 @@ export default function Navbar({ onOpenAuth }) {
 
             <div className="h-px bg-white/10 mb-1" />
 
-            {NAV_LINKS.map(({ label, href }) => (
+            {links.map((item) => (
               <a
-                key={href}
-                href={href}
-                onClick={(e) => { e.preventDefault(); handleNavClick(href); }}
-                className="px-4 py-3 rounded-xl text-sm font-medium text-white/90 font-body hover:bg-white/[0.08] hover:text-white transition-all"
+                key={item.href}
+                href={item.href}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMenuOpen(false);
+                  if (onViewChange) {
+                    onViewChange(item.view, item.href);
+                  } else {
+                    handleNavClick(item.href);
+                  }
+                }}
+                className={`px-4 py-3 rounded-xl text-sm font-medium font-body transition-all ${
+                  currentView === item.view
+                    ? "text-white bg-white/[0.08]"
+                    : "text-white/90 hover:bg-white/[0.08] hover:text-white"
+                }`}
               >
-                {label}
+                {item.label}
               </a>
             ))}
 
