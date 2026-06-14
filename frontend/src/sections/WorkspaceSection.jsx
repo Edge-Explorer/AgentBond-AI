@@ -7,6 +7,9 @@ export default function WorkspaceSection({ onBackToLanding }) {
   const [activeCase, setActiveCase] = useState(null);
   const [loadingCases, setLoadingCases] = useState(true);
 
+  // Accordion state for hypotheses
+  const [expandedHypothesisId, setExpandedHypothesisId] = useState(null);
+
   // New Case Form States
   const [isCreatingNew, setIsCreatingNew] = useState(true);
   const [problemStatement, setProblemStatement] = useState("");
@@ -37,7 +40,6 @@ export default function WorkspaceSection({ onBackToLanding }) {
       if (res.ok) {
         const data = await res.json();
         setCases(data);
-        // If we don't have a selected case and not creating a new one, select the first case
         if (data.length > 0 && !selectedCaseId && !isCreatingNew) {
           setSelectedCaseId(data[0].case_id);
           setIsCreatingNew(false);
@@ -59,6 +61,11 @@ export default function WorkspaceSection({ onBackToLanding }) {
       if (res.ok) {
         const data = await res.json();
         setActiveCase(data);
+
+        // Auto-expand first hypothesis if none is expanded and hypotheses are loaded
+        if (data.hypotheses && data.hypotheses.length > 0 && !expandedHypothesisId) {
+          setExpandedHypothesisId(data.hypotheses[0].id);
+        }
 
         // Update in cases list to sync status
         setCases((prev) =>
@@ -104,6 +111,7 @@ export default function WorkspaceSection({ onBackToLanding }) {
   useEffect(() => {
     if (selectedCaseId) {
       setIsCreatingNew(false);
+      setExpandedHypothesisId(null); // Reset accordion
       startPolling(selectedCaseId);
     } else {
       setActiveCase(null);
@@ -141,7 +149,6 @@ export default function WorkspaceSection({ onBackToLanding }) {
 
     setIsSubmitting(true);
     try {
-      // 1. Create the case context record
       const cleanConstraints = constraints.filter((c) => c.trim() !== "");
       const createRes = await fetch(`${API_BASE_URL}/api/cases`, {
         method: "POST",
@@ -155,7 +162,6 @@ export default function WorkspaceSection({ onBackToLanding }) {
       if (!createRes.ok) throw new Error("Failed to initialize case");
       const newCase = await createRes.json();
 
-      // 2. Trigger decomposition & Celery execution pipeline
       const decompRes = await fetch(`${API_BASE_URL}/api/cases/${newCase.case_id}/decompose`, {
         method: "POST",
         headers: getHeaders(),
@@ -164,7 +170,6 @@ export default function WorkspaceSection({ onBackToLanding }) {
       if (!decompRes.ok) throw new Error("Failed to deploy agent pipeline");
       const activeContext = await decompRes.json();
 
-      // Refresh list, select the new case, and start polling
       setProblemStatement("");
       setConstraints([""]);
       await fetchCases();
@@ -178,17 +183,17 @@ export default function WorkspaceSection({ onBackToLanding }) {
   };
 
   return (
-    <section className="relative w-screen min-h-screen pt-24 pb-12 px-6 lg:px-12 flex gap-6 z-10 text-white select-none">
+    <section className="relative w-screen min-h-screen pt-24 pb-12 px-6 lg:px-12 flex gap-6 z-10 text-white selection:bg-[#7C5CFC]/30 selection:text-white">
       {/* ── SIDEBAR: PAST CASES ── */}
-      <div className="w-80 rounded-[1.25rem] liquid-glass flex flex-col p-5 h-[calc(100vh-160px)] shrink-0">
+      <div className="w-80 rounded-[1.25rem] bg-[#0a0a0c]/85 border border-white/10 backdrop-blur-2xl shadow-[0_24px_80px_rgba(0,0,0,0.6)] flex flex-col p-5 h-[calc(100vh-140px)] shrink-0">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="font-heading italic text-2xl tracking-tight">Investigation nodes</h2>
+          <h2 className="font-heading italic text-2xl tracking-tight text-white/90">Investigation nodes</h2>
           <button
             onClick={() => {
               setSelectedCaseId(null);
               setIsCreatingNew(true);
             }}
-            className="w-8 h-8 rounded-full liquid-glass-strong hover:scale-105 active:scale-95 transition-all flex items-center justify-center cursor-pointer text-white/80 hover:text-white"
+            className="w-8 h-8 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center cursor-pointer text-white/80 hover:text-white"
             title="New investigation"
           >
             ＋
@@ -196,10 +201,10 @@ export default function WorkspaceSection({ onBackToLanding }) {
         </div>
 
         {/* Scrollable list */}
-        <div className="flex-1 overflow-y-auto space-y-3 pr-2 scrollbar-thin">
+        <div className="flex-1 overflow-y-auto space-y-3 pr-1 scrollbar-thin">
           {loadingCases ? (
-            <div className="flex items-center justify-center py-10 text-white/30 text-sm">
-              Connecting to context store...
+            <div className="flex items-center justify-center py-10 text-white/30 text-xs tracking-wider uppercase">
+              Accessing Context Store...
             </div>
           ) : cases.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center text-white/30 text-xs px-2">
@@ -211,10 +216,10 @@ export default function WorkspaceSection({ onBackToLanding }) {
               <button
                 key={c.case_id}
                 onClick={() => handleSelectCase(c.case_id)}
-                className={`w-full text-left p-4 rounded-xl border transition-all duration-200 cursor-pointer flex flex-col justify-between gap-2.5 ${
+                className={`w-full text-left p-4 rounded-xl border transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 ${
                   selectedCaseId === c.case_id
-                    ? "bg-white/[0.06] border-white/20 shadow-md shadow-[#7C5CFC]/10"
-                    : "bg-white/[0.01] border-white/5 hover:bg-white/[0.03] hover:border-white/10"
+                    ? "bg-[#7C5CFC]/10 border-[#7C5CFC]/40 shadow-lg shadow-[#7C5CFC]/5"
+                    : "bg-white/[0.02] border-white/5 hover:bg-white/[0.04] hover:border-white/10"
                 }`}
               >
                 <span className="text-xs font-body font-light text-white/90 line-clamp-2 leading-relaxed">
@@ -222,12 +227,10 @@ export default function WorkspaceSection({ onBackToLanding }) {
                 </span>
 
                 <div className="flex items-center justify-between w-full">
-                  {/* Time */}
-                  <span className="text-[10px] text-white/35 font-light font-body">
+                  <span className="text-[10px] text-white/40 font-light font-body">
                     {c.updated_at ? new Date(c.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"}
                   </span>
 
-                  {/* Status Badge */}
                   <span
                     className={`rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider ${
                       c.status === "completed"
@@ -259,7 +262,7 @@ export default function WorkspaceSection({ onBackToLanding }) {
       </div>
 
       {/* ── MAIN WORKSPACE ── */}
-      <div className="flex-1 rounded-[1.25rem] liquid-glass flex flex-col p-8 h-[calc(100vh-160px)] overflow-y-auto scrollbar-thin">
+      <div className="flex-1 rounded-[1.25rem] bg-[#09090b]/85 border border-white/10 backdrop-blur-2xl shadow-[0_24px_80px_rgba(0,0,0,0.6)] flex flex-col p-8 h-[calc(100vh-140px)] overflow-y-auto scrollbar-thin">
         <AnimatePresence mode="wait">
           {isCreatingNew ? (
             /* CREATE CASE WORKSPACE */
@@ -269,7 +272,7 @@ export default function WorkspaceSection({ onBackToLanding }) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.3 }}
-              className="max-w-2xl mx-auto w-full flex flex-col justify-center min-h-full"
+              className="max-w-2xl mx-auto w-full flex flex-col justify-center min-h-full py-6"
             >
               <div className="mb-8">
                 <h1 className="font-heading italic text-4xl text-white tracking-tight leading-none mb-3">
@@ -281,7 +284,6 @@ export default function WorkspaceSection({ onBackToLanding }) {
               </div>
 
               <form onSubmit={handleSubmitCase} className="space-y-6">
-                {/* Problem Input */}
                 <div className="space-y-2">
                   <label className="block text-xs font-semibold uppercase tracking-wider text-white/50">
                     Investigation Objective / Problem Statement
@@ -296,7 +298,6 @@ export default function WorkspaceSection({ onBackToLanding }) {
                   />
                 </div>
 
-                {/* Constraints inputs */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <label className="block text-xs font-semibold uppercase tracking-wider text-white/50">
@@ -335,7 +336,6 @@ export default function WorkspaceSection({ onBackToLanding }) {
                   </div>
                 </div>
 
-                {/* Submit button */}
                 <div className="pt-4 flex justify-end">
                   <button
                     type="submit"
@@ -371,7 +371,7 @@ export default function WorkspaceSection({ onBackToLanding }) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.3 }}
-              className="space-y-8"
+              className="space-y-8 pb-20"
             >
               {/* Header block */}
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 border-b border-white/10 pb-6">
@@ -384,9 +384,9 @@ export default function WorkspaceSection({ onBackToLanding }) {
                   </h1>
                   {activeCase?.constraints && activeCase.constraints.length > 0 && (
                     <div className="flex flex-wrap items-center gap-1.5 pt-1.5">
-                      <span className="text-[10px] text-white/35 font-medium uppercase mr-1">Scope:</span>
+                      <span className="text-[10px] text-white/45 font-medium uppercase mr-1">Scope:</span>
                       {activeCase.constraints.map((c, i) => (
-                        <span key={i} className="text-[9px] rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-white/60">
+                        <span key={i} className="text-[9px] rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-white/70">
                           {c}
                         </span>
                       ))}
@@ -394,7 +394,6 @@ export default function WorkspaceSection({ onBackToLanding }) {
                   )}
                 </div>
 
-                {/* State Badge */}
                 <div className="flex flex-col items-end gap-1.5 shrink-0">
                   <span
                     className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider ${
@@ -467,120 +466,159 @@ export default function WorkspaceSection({ onBackToLanding }) {
                 ))}
               </div>
 
-              {/* Grid: Hypotheses and Live Evidence */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* ── Left side: Hypotheses ── */}
-                <div className="space-y-4">
-                  <h3 className="font-heading italic text-2xl tracking-tight border-b border-white/5 pb-2">
-                    Generated Hypotheses
-                  </h3>
+              {/* Accordion List of Hypotheses with Nested Evidence */}
+              <div className="space-y-5">
+                <h3 className="font-heading italic text-3xl tracking-tight border-b border-white/10 pb-2">
+                  Generated Hypotheses & Live Evidence
+                </h3>
 
-                  {activeCase?.hypotheses && activeCase.hypotheses.length > 0 ? (
-                    <div className="space-y-3">
-                      {activeCase.hypotheses.map((h, i) => (
+                {activeCase?.hypotheses && activeCase.hypotheses.length > 0 ? (
+                  <div className="space-y-4">
+                    {activeCase.hypotheses.map((h, i) => {
+                      const isExpanded = expandedHypothesisId === h.id;
+                      // Filter evidence belonging to this hypothesis
+                      const relatedEvidence = activeCase.evidence ? activeCase.evidence.filter(ev => ev.hypothesis_id === h.id) : [];
+
+                      return (
                         <div
                           key={h.id || i}
-                          className="bg-white/[0.02] border border-white/5 p-4 rounded-xl flex items-start justify-between gap-4 hover:border-white/10 transition-colors"
+                          className={`rounded-xl border transition-all duration-300 overflow-hidden ${
+                            isExpanded
+                              ? "bg-white/[0.03] border-white/20 shadow-xl"
+                              : "bg-white/[0.01] border-white/5 hover:border-white/10"
+                          }`}
                         >
-                          <div className="space-y-2">
-                            <span className="text-[10px] font-mono font-semibold text-white/35">
-                              HYP-{i + 1}
-                            </span>
-                            <p className="text-xs text-white/95 font-body font-light leading-relaxed">
-                              {h.statement}
-                            </p>
-                            {h.assigned_investigator && (
-                              <span className="inline-block text-[9px] text-[#9E8EFD] font-mono font-semibold uppercase tracking-wider">
-                                🕵️ {h.assigned_investigator}
-                              </span>
-                            )}
-                          </div>
-
-                          {/* Hypothesis Status */}
-                          <span
-                            className={`rounded-full px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider block shrink-0 ${
-                              h.status === "verified"
-                                ? "bg-green-500/10 text-green-400 border border-green-500/20"
-                                : h.status === "disproved"
-                                ? "bg-red-500/10 text-red-400 border border-red-500/20"
-                                : h.status === "inconclusive"
-                                ? "bg-orange-500/10 text-orange-400 border border-orange-500/20"
-                                : h.status === "investigating"
-                                ? "bg-[#7C5CFC]/15 text-[#9E8EFD] border border-[#7C5CFC]/30 animate-pulse"
-                                : "bg-white/5 text-white/30 border border-white/5"
-                            }`}
+                          {/* Accordion Trigger Header */}
+                          <button
+                            onClick={() => setExpandedHypothesisId(isExpanded ? null : h.id)}
+                            className="w-full text-left p-5 flex items-start justify-between gap-4 cursor-pointer"
                           >
-                            {h.status}
-                          </span>
+                            <div className="space-y-2 flex-1">
+                              <div className="flex items-center gap-2">
+                                <span className="text-[10px] font-mono font-bold text-white/35 bg-white/5 px-2 py-0.5 rounded">
+                                  HYPOTHESIS {i + 1}
+                                </span>
+                                {h.assigned_investigator && (
+                                  <span className="text-[10px] text-[#9E8EFD] font-mono font-semibold">
+                                    🕵️ {h.assigned_investigator}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-sm font-body font-light text-white/95 leading-relaxed pr-4">
+                                {h.statement}
+                              </p>
+                            </div>
+
+                            <div className="flex items-center gap-3 shrink-0">
+                              <span
+                                className={`rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
+                                  h.status === "verified"
+                                    ? "bg-green-500/10 text-green-400 border border-green-500/20"
+                                    : h.status === "disproved"
+                                    ? "bg-red-500/10 text-red-400 border border-red-500/20"
+                                    : h.status === "inconclusive"
+                                    ? "bg-orange-500/10 text-orange-400 border border-orange-500/20"
+                                    : h.status === "investigating"
+                                    ? "bg-[#7C5CFC]/15 text-[#9E8EFD] border border-[#7C5CFC]/30 animate-pulse"
+                                    : "bg-white/5 text-white/30 border border-white/5"
+                                }`}
+                              >
+                                {h.status}
+                              </span>
+                              <span className="text-white/40 text-xs">
+                                {isExpanded ? "▲" : "▼"}
+                              </span>
+                            </div>
+                          </button>
+
+                          {/* Accordion Body Content */}
+                          <AnimatePresence initial={false}>
+                            {isExpanded && (
+                              <motion.div
+                                initial={{ height: 0 }}
+                                animate={{ height: "auto" }}
+                                exit={{ height: 0 }}
+                                transition={{ duration: 0.25, ease: "easeInOut" }}
+                              >
+                                <div className="border-t border-white/5 p-5 bg-black/20 space-y-4">
+                                  {/* Evidence items */}
+                                  <div className="space-y-3">
+                                    <h4 className="text-xs font-semibold uppercase tracking-wider text-white/40">
+                                      Collected Evidence & Web Snippets
+                                    </h4>
+
+                                    {relatedEvidence.length > 0 ? (
+                                      <div className="space-y-3">
+                                        {relatedEvidence.map((ev, evIdx) => {
+                                          const isContrary = ev.content.startsWith("[CONTRARY]");
+                                          const cleanContent = isContrary ? ev.content.replace("[CONTRARY] ", "") : ev.content;
+
+                                          return (
+                                            <div
+                                              key={ev.id || evIdx}
+                                              className={`p-4 rounded-lg border text-xs font-body font-light leading-relaxed ${
+                                                isContrary
+                                                  ? "bg-red-950/10 border-red-500/20 text-red-100/90 pl-3.5 border-l-2 border-l-red-500"
+                                                  : "bg-green-950/5 border-green-500/20 text-green-500/90 pl-3.5 border-l-2 border-l-green-500"
+                                              }`}
+                                            >
+                                              <div className="flex items-center justify-between mb-1.5">
+                                                <span className="text-[10px] font-mono font-medium text-white/40">
+                                                  Source: {ev.source}
+                                                </span>
+                                                <span className="text-[10px] font-mono font-medium text-white/40">
+                                                  Confidence: {(ev.confidence * 100).toFixed(0)}%
+                                                </span>
+                                              </div>
+                                              <p>{cleanContent}</p>
+                                            </div>
+                                          );
+                                        })}
+                                      </div>
+                                    ) : h.status === "investigating" ? (
+                                      <div className="flex items-center gap-2 text-white/35 text-xs py-2">
+                                        <svg className="animate-spin h-3.5 w-3.5 text-[#9E8EFD]" fill="none" viewBox="0 0 24 24">
+                                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                        </svg>
+                                        Crawling DuckDuckGo search queries for evidence...
+                                      </div>
+                                    ) : (
+                                      <div className="text-white/35 text-xs py-2 italic">
+                                        No direct evidence recorded for this hypothesis.
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center py-10 border border-dashed border-white/10 rounded-xl text-white/30 text-xs">
-                      <svg className="animate-spin h-5 w-5 text-[#9E8EFD] mb-3" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                      </svg>
-                      Case Manager formulating hypotheses...
-                    </div>
-                  )}
-                </div>
-
-                {/* ── Right side: Collected Evidence & Facts ── */}
-                <div className="space-y-4">
-                  <h3 className="font-heading italic text-2xl tracking-tight border-b border-white/5 pb-2">
-                    Evidence & Findings
-                  </h3>
-
-                  {activeCase?.evidence && activeCase.evidence.length > 0 ? (
-                    <div className="space-y-3 max-h-[400px] overflow-y-auto pr-1 scrollbar-thin">
-                      {activeCase.evidence.map((ev, i) => (
-                        <div
-                          key={ev.id || i}
-                          className="bg-white/[0.01] border border-white/5 p-4 rounded-xl space-y-2"
-                        >
-                          <div className="flex items-center justify-between w-full">
-                            <span className="text-[9px] font-semibold text-white/35 font-mono truncate max-w-[75%]">
-                              🔍 {ev.source}
-                            </span>
-                            <span className="text-[9px] rounded bg-white/5 border border-white/10 px-1 py-0.5 text-white/50 font-mono font-semibold">
-                              Conf: {(ev.confidence * 100).toFixed(0)}%
-                            </span>
-                          </div>
-
-                          <p className="text-xs font-body font-light text-white/85 leading-relaxed">
-                            {ev.content}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  ) : activeCase?.hypotheses && activeCase.hypotheses.length > 0 ? (
-                    <div className="flex flex-col items-center justify-center py-16 border border-dashed border-white/10 rounded-xl text-white/30 text-xs">
-                      <svg className="animate-spin h-5 w-5 text-[#9E8EFD] mb-3" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                      </svg>
-                      Investigators fetching live facts from DuckDuckGo...
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center py-16 border border-dashed border-white/10 rounded-xl text-white/20 text-xs">
-                      Awaiting hypotheses...
-                    </div>
-                  )}
-                </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-12 border border-dashed border-white/10 rounded-xl text-white/30 text-xs">
+                    <svg className="animate-spin h-5 w-5 text-[#9E8EFD] mb-3" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Case Manager decomposing case objective...
+                  </div>
+                )}
               </div>
 
               {/* ── Conclusion Section ── */}
               {activeCase?.status === "completed" && activeCase?.facts && activeCase.facts.length > 0 && (
-                <div className="bg-[#7C5CFC]/5 border border-[#7C5CFC]/20 p-6 rounded-xl space-y-3 mt-6">
-                  <h3 className="font-heading italic text-2xl text-white">
+                <div className="bg-[#7C5CFC]/10 border border-[#7C5CFC]/30 p-6 rounded-xl space-y-4 mt-6">
+                  <h3 className="font-heading italic text-3xl text-white">
                     Final Case Verdict Summary
                   </h3>
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {activeCase.facts
                       .filter((f) => f.source === "ResearchAgent")
                       .map((f, i) => (
-                        <div key={i} className="text-xs font-body font-light text-white/90 leading-relaxed border-l-2 border-[#7C5CFC]/50 pl-3">
+                        <div key={i} className="text-sm font-body font-light text-white/90 leading-relaxed border-l-2 border-[#7C5CFC]/50 pl-3">
                           {f.content.replace("Hypothesis Verdict:", "")}
                         </div>
                       ))}
