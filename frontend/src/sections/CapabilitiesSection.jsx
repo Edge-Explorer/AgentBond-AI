@@ -46,9 +46,7 @@ export default function CapabilitiesSection() {
       <div className="relative z-10 px-8 md:px-16 lg:px-20 pt-24 pb-10 flex flex-col min-h-screen justify-between">
         {/* Header section */}
         <div className="mb-auto">
-          <p className="text-sm font-body text-white/80 mb-4 tracking-wider uppercase">
-            // Core Engine
-          </p>
+
           <h2 className="font-heading italic text-white text-6xl md:text-7xl lg:text-[6.5rem] leading-[0.9] tracking-[-3px]">
             Investigation
             <br />

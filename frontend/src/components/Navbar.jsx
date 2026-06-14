@@ -87,13 +87,10 @@ const AgentBondLogo = ({ className = "" }) => (
     </svg>
 
     {/* Wordmark */}
-    <div className="hidden sm:flex flex-col leading-none select-none">
+    <div className="hidden sm:block select-none">
       <span className="text-white font-heading italic text-[1.15rem] tracking-tight leading-none"
         style={{ textShadow: "0 0 20px rgba(124,92,252,0.4)" }}>
         AgentBond
-      </span>
-      <span className="text-white/35 text-[0.58rem] font-body font-medium tracking-[0.2em] uppercase leading-none mt-[3px]">
-        AI · Multi-Agent
       </span>
     </div>
   </div>
