@@ -7,6 +7,8 @@ from app.services.database import get_db
 from app.services.context_manager import ContextManager
 from app.models.schemas import CaseContext, CaseStatus
 from app.workers.celery_worker import run_case_manager_task
+from app.api.auth import get_current_user
+from app.models.database_models import UserModel
 
 router = APIRouter(prefix="/api/cases", tags=["Cases"])
 
@@ -15,15 +17,20 @@ class CreateCaseRequest(BaseModel):
     constraints: Optional[List[str]] = Field(default_factory=list, example=["creator niche = tech"])
 
 @router.post("", response_model=CaseContext, status_code=status.HTTP_201_CREATED)
-def create_case(payload: CreateCaseRequest, db: Session = Depends(get_db)):
+def create_case(
+    payload: CreateCaseRequest, 
+    db: Session = Depends(get_db), 
+    current_user: UserModel = Depends(get_current_user)
+):
     """
-    Initializes a new investigation case in the shared context database.
+    Initializes a new investigation case in the shared context database and links it to the current user.
     """
     try:
         context = ContextManager.create_context(
             db=db,
             problem_statement=payload.problem_statement,
-            constraints=payload.constraints
+            constraints=payload.constraints,
+            user_id=current_user.id
         )
         return context
     except Exception as e:
@@ -33,9 +40,13 @@ def create_case(payload: CreateCaseRequest, db: Session = Depends(get_db)):
         )
 
 @router.get("/{case_id}", response_model=CaseContext)
-def get_case(case_id: str, db: Session = Depends(get_db)):
+def get_case(
+    case_id: str, 
+    db: Session = Depends(get_db), 
+    current_user: UserModel = Depends(get_current_user)
+):
     """
-    Retrieves the complete shared context for a case.
+    Retrieves the complete shared context for a case, validating user authorization.
     """
     context = ContextManager.get_context(db=db, case_id=case_id)
     if not context:
@@ -43,22 +54,41 @@ def get_case(case_id: str, db: Session = Depends(get_db)):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Case with ID {case_id} not found."
         )
+    
+    from app.models.database_models import CaseContextModel
+    case_db = db.query(CaseContextModel).filter(CaseContextModel.case_id == case_id).first()
+    if case_db and case_db.user_id and case_db.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied to this case."
+        )
+
     return context
 
 @router.post("/{case_id}/decompose", response_model=CaseContext, status_code=status.HTTP_202_ACCEPTED)
-def decompose_case(case_id: str, db: Session = Depends(get_db)):
+def decompose_case(
+    case_id: str, 
+    db: Session = Depends(get_db), 
+    current_user: UserModel = Depends(get_current_user)
+):
     """
-    Triggers the Case Manager Agent task asynchronously via Celery
-    to break down the case problem statement into hypotheses.
+    Triggers the Case Manager Agent task asynchronously via Celery, validating user authorization.
     """
-    # 1. Get current case context
-    context = ContextManager.get_context(db=db, case_id=case_id)
-    if not context:
+    from app.models.database_models import CaseContextModel
+    case_db = db.query(CaseContextModel).filter(CaseContextModel.case_id == case_id).first()
+    if not case_db:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Case with ID {case_id} not found."
         )
+    
+    if case_db.user_id and case_db.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied to this case."
+        )
 
+    context = ContextManager.get_context(db=db, case_id=case_id)
     if context.hypotheses:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -84,12 +114,16 @@ def decompose_case(case_id: str, db: Session = Depends(get_db)):
         )
 
 @router.get("", response_model=List[CaseContext])
-def get_cases(limit: int = 20, db: Session = Depends(get_db)):
+def get_cases(
+    limit: int = 20, 
+    db: Session = Depends(get_db), 
+    current_user: UserModel = Depends(get_current_user)
+):
     """
-    Retrieves all investigation cases in the database.
+    Retrieves all investigation cases in the database belonging to the current user.
     """
     try:
-        return ContextManager.get_all_contexts(db=db, limit=limit)
+        return ContextManager.get_all_contexts(db=db, limit=limit, user_id=current_user.id)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

@@ -7,7 +7,7 @@ from app.models.database_models import CaseContextModel, FactModel, HypothesisMo
 
 class ContextManager:
     @staticmethod
-    def create_context(db: Session, problem_statement: str, constraints: List[str] = None) -> CaseContext:
+    def create_context(db: Session, problem_statement: str, constraints: List[str] = None, user_id: str = None) -> CaseContext:
         """
         Creates a new case context row in the database and returns the Pydantic schema representation.
         """
@@ -16,6 +16,7 @@ class ContextManager:
         # 1. Create the base case model
         case_db = CaseContextModel(
             case_id=case_id,
+            user_id=user_id,
             problem_statement=problem_statement,
             status=CaseStatus.PENDING,
             metadata_json={},
@@ -212,11 +213,14 @@ class ContextManager:
         return hyp_db
 
     @staticmethod
-    def get_all_contexts(db: Session, limit: int = 20) -> List[CaseContext]:
+    def get_all_contexts(db: Session, limit: int = 20, user_id: Optional[str] = None) -> List[CaseContext]:
         """
         Retrieves a list of all case contexts in the database.
         """
-        cases_db = db.query(CaseContextModel).order_by(CaseContextModel.updated_at.desc()).limit(limit).all()
+        query = db.query(CaseContextModel)
+        if user_id:
+            query = query.filter(CaseContextModel.user_id == user_id)
+        cases_db = query.order_by(CaseContextModel.updated_at.desc()).limit(limit).all()
         result = []
         for case_db in cases_db:
             ctx = ContextManager.get_context(db, case_db.case_id)
