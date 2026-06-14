@@ -673,6 +673,12 @@ export default function WorkspaceSection({ onBackToLanding }) {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Disclaimer */}
+        <div className="text-[10px] text-white/25 text-center mt-auto pt-8 font-light tracking-wide max-w-md mx-auto select-none z-10 relative pointer-events-none">
+          AgentBond AI is an autonomous orchestration system that aggregates real-time intelligence. Findings may contain inaccuracies; please verify critical evidence independently.
+        </div>
+
         {/* Main Workspace Watermark */}
         <AgentBondWatermark size={240} className="absolute bottom-6 right-6 opacity-[0.03] z-0 pointer-events-none" />
       </div>
