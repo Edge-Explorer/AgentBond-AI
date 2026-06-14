@@ -71,7 +71,7 @@ export default function Navbar() {
         initial={{ y: -30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className={`fixed top-4 left-0 right-0 px-5 lg:px-12 z-50 flex items-center justify-between transition-all duration-300`}
+        className="fixed top-4 left-0 right-0 px-5 lg:px-12 z-50 grid grid-cols-[auto_1fr_auto] items-center gap-4 transition-all duration-300"
       >
         {/* Left: Logo */}
         <a
@@ -83,8 +83,9 @@ export default function Navbar() {
           a
         </a>
 
-        {/* Center: Nav pill (desktop) */}
-        <div className="hidden md:flex items-center gap-0.5 px-1.5 py-1.5 rounded-full liquid-glass">
+        {/* Center: Nav pill (desktop) — absolutely centered */}
+        <div className="hidden md:flex justify-center">
+          <div className="flex items-center gap-0.5 px-1.5 py-1.5 rounded-full liquid-glass">
           {NAV_LINKS.map(({ label, href }) => (
             <a
               key={href}
@@ -107,6 +108,7 @@ export default function Navbar() {
               <line x1="16.5" y1="16.5" x2="21" y2="21" />
             </svg>
           </button>
+          </div>
         </div>
 
         {/* Right: Social icon buttons + mobile menu trigger */}
