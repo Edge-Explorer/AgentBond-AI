@@ -23,19 +23,21 @@ function MainAppContent() {
       </div>
 
       {/* Shared Navigation Header */}
-      <Navbar
-        onOpenAuth={() => setIsAuthModalOpen(true)}
-        currentView={view}
-        onViewChange={(newView, hash) => {
-          setView(newView);
-          if (newView === "landing" && hash) {
-            setTimeout(() => {
-              const el = document.querySelector(hash);
-              if (el) el.scrollIntoView({ behavior: "smooth" });
-            }, 50);
-          }
-        }}
-      />
+      {view === "landing" && (
+        <Navbar
+          onOpenAuth={() => setIsAuthModalOpen(true)}
+          currentView={view}
+          onViewChange={(newView, hash) => {
+            setView(newView);
+            if (newView === "landing" && hash) {
+              setTimeout(() => {
+                const el = document.querySelector(hash);
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }, 50);
+            }
+          }}
+        />
+      )}
 
       {/* View router */}
       {view === "landing" ? (
