@@ -3,16 +3,32 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.services.database import Base
 
+class UserModel(Base):
+    __tablename__ = "users"
+    
+    id = Column(String, primary_key=True, index=True)
+    email = Column(String, unique=True, index=True, nullable=False)
+    name = Column(String, nullable=True)
+    avatar_url = Column(String, nullable=True)
+    google_id = Column(String, unique=True, index=True, nullable=True)
+    hashed_password = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    cases = relationship("CaseContextModel", back_populates="user", cascade="all, delete-orphan")
+
+
 class CaseContextModel(Base):
     __tablename__= "cases"
     
     case_id= Column(String, primary_key= True, index= True)
+    user_id= Column(String, ForeignKey("users.id", ondelete="CASCADE"), nullable=True)
     problem_statement= Column(String, nullable= False)
     status= Column(String, default= "pending", nullable= False)
     metadata_json= Column(JSON, default= dict)
     updated_at= Column(DateTime, default= datetime.utcnow, onupdate= datetime.utcnow)
     
     # Relationships
+    user= relationship("UserModel", back_populates="cases")
     facts= relationship("FactModel", back_populates= "case", cascade= "all, delete-orphan")
     hypotheses= relationship("HypothesisModel", back_populates= "case", cascade= "all, delete-orphan")
     evidence= relationship("EvidenceModel", back_populates= "case", cascade= "all, delete-orphan")

@@ -1,13 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
 import BlurText from "../components/BlurText";
+import { useAuth } from "../context/AuthContext";
 
-// Placeholder: wire up to Google OAuth + JWT when ready
-const handleBeginInvestigation = () => {
-  alert("Google OAuth coming soon! 🔐");
-};
-
-export default function HeroSection() {
+export default function HeroSection({ onOpenAuth }) {
+  const { user } = useAuth();
   const containerVariants = {
     initial: {},
     animate: {
@@ -110,14 +107,20 @@ export default function HeroSection() {
         {/* Single CTA — centered */}
         <motion.div variants={itemVariants} className="mt-9 flex justify-center">
           <button
-            onClick={handleBeginInvestigation}
+            onClick={() => {
+              if (user) {
+                alert(`Welcome back, ${user.name || 'Agent'}. Accessing secure investigation node...`);
+              } else {
+                onOpenAuth();
+              }
+            }}
             className="flex items-center gap-2.5 rounded-full px-7 py-3.5 text-sm font-semibold text-white liquid-glass-strong hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="7" />
               <line x1="16.5" y1="16.5" x2="21" y2="21" />
             </svg>
-            Begin Investigation
+            {user ? "Deploy Agent Pipeline" : "Begin Investigation"}
           </button>
         </motion.div>
 

@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "../context/AuthContext";
 
 const NAV_LINKS = [
   { label: "Home", href: "#home" },
   { label: "Capabilities", href: "#capabilities" },
 ];
-
-// Placeholder: replace with real Google OAuth + JWT flow later
-const handleBeginInvestigation = () => {
-  // TODO: trigger Google OAuth login → issue JWT → redirect to dashboard
-  alert("Google OAuth coming soon! 🔐");
-};
 
 // SVG Icons
 const GithubIcon = () => (
@@ -47,7 +42,8 @@ const CloseIcon = () => (
   </svg>
 );
 
-export default function Navbar() {
+export default function Navbar({ onOpenAuth }) {
+  const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -97,17 +93,33 @@ export default function Navbar() {
             </a>
           ))}
 
-          {/* Begin Investigation CTA */}
-          <button
-            onClick={handleBeginInvestigation}
-            className="flex items-center gap-1.5 bg-white text-black px-4 py-2 text-sm font-semibold rounded-full hover:bg-white/90 active:scale-95 transition-all whitespace-nowrap ml-1"
-          >
-            Begin Investigation
-            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="7" />
-              <line x1="16.5" y1="16.5" x2="21" y2="21" />
-            </svg>
-          </button>
+          {user ? (
+            <div className="flex items-center gap-2 ml-1">
+              <img
+                src={user.avatar_url}
+                alt={user.name}
+                className="w-7 h-7 rounded-full border border-white/20"
+              />
+              <span className="text-xs font-semibold max-w-[80px] truncate">{user.name}</span>
+              <button
+                onClick={logout}
+                className="text-xs text-white/50 hover:text-white underline cursor-pointer ml-1"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={onOpenAuth}
+              className="flex items-center gap-1.5 bg-white text-black px-4 py-2 text-sm font-semibold rounded-full hover:bg-white/90 active:scale-95 transition-all whitespace-nowrap ml-1"
+            >
+              Begin Investigation
+              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="7" />
+                <line x1="16.5" y1="16.5" x2="21" y2="21" />
+              </svg>
+            </button>
+          )}
           </div>
         </div>
 
@@ -208,12 +220,40 @@ export default function Navbar() {
 
             <div className="h-px bg-white/10 my-2" />
 
-            <button
-              onClick={handleBeginInvestigation}
-              className="flex items-center justify-center gap-2 bg-white text-black px-4 py-2.5 text-sm font-semibold rounded-full hover:bg-white/90 transition-all"
-            >
-              Begin Investigation 🔍
-            </button>
+            {user ? (
+              <div className="flex flex-col gap-2 p-2 rounded-xl border border-white/5 bg-white/[0.02]">
+                <div className="flex items-center gap-3 px-2 py-1">
+                  <img
+                    src={user.avatar_url}
+                    alt={user.name}
+                    className="w-8 h-8 rounded-full border border-white/20"
+                  />
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold">{user.name}</span>
+                    <span className="text-xs text-white/50">{user.email}</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    logout();
+                    setMenuOpen(false);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 text-white py-2 text-sm font-semibold rounded-lg transition-all"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  onOpenAuth();
+                  setMenuOpen(false);
+                }}
+                className="flex items-center justify-center gap-2 bg-white text-black px-4 py-2.5 text-sm font-semibold rounded-full hover:bg-white/90 transition-all"
+              >
+                Begin Investigation 🔍
+              </button>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

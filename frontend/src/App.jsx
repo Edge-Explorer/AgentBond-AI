@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "./components/Navbar";
 import HeroSection from "./sections/HeroSection";
 import CapabilitiesSection from "./sections/CapabilitiesSection";
 import FadingVideo from "./components/FadingVideo";
+import { AuthProvider } from "./context/AuthContext";
+import AuthModal from "./components/AuthModal";
 
-export default function App() {
+function MainAppContent() {
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
   return (
     <div className="relative w-screen bg-black text-white selection:bg-white selection:text-black min-h-screen">
       {/* Shared Background Video Layer */}
@@ -17,13 +21,24 @@ export default function App() {
       </div>
 
       {/* Shared Navigation Header */}
-      <Navbar />
+      <Navbar onOpenAuth={() => setIsAuthModalOpen(true)} />
 
       {/* Hero Section (Section 1) */}
-      <HeroSection />
+      <HeroSection onOpenAuth={() => setIsAuthModalOpen(true)} />
 
       {/* Capabilities Section (Section 2) */}
       <CapabilitiesSection />
+
+      {/* Auth Modal */}
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <MainAppContent />
+    </AuthProvider>
   );
 }

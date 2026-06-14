@@ -12,12 +12,19 @@ print("----------------------------")
 from fastapi import FastAPI, Response  # type: ignore
 from fastapi.middleware.cors import CORSMiddleware   # type: ignore
 from prometheus_client import CollectorRegistry, multiprocess, generate_latest, CONTENT_TYPE_LATEST
+from starlette.middleware.sessions import SessionMiddleware # type: ignore
 from app.api.routes import router as cases_router
+from app.api.auth import router as auth_router
 
 app = FastAPI(
     title="Multi-Agent Investigator Engine",
     description="An agent orchestration runtime with shared context and verification.",
     version="0.1.0"
+)
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=os.getenv("SESSION_SECRET_KEY", "super-secret-session-key-for-oauth")
 )
 
 app.add_middleware(
@@ -30,6 +37,7 @@ app.add_middleware(
 
 # Register routes
 app.include_router(cases_router)
+app.include_router(auth_router)
 
 # 2. Expose aggregate multi-process metrics endpoint
 @app.get("/metrics/")
