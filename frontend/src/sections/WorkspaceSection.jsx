@@ -42,7 +42,74 @@ const AgentBondWatermark = ({ size = 200, className = "" }) => (
     <line x1="80" y1="78" x2="100" y2="98" stroke="white" strokeWidth="5.5" strokeLinecap="round" strokeOpacity="0.6"/>
     <line x1="79" y1="77" x2="99" y2="97" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.35"/>
   </svg>
-);
+// Helper to highlight important keywords in verdict conclusions
+const highlightImportantText = (text) => {
+  if (!text) return "";
+  
+  const keywords = [
+    { pattern: /\b(not supported|contradicting|contradicts|refuted|inconclusive|disproved|no evidence)\b/gi, className: "text-red-400 font-medium" },
+    { pattern: /\b(supported|largely supported|verified|confirmed|authentic)\b/gi, className: "text-emerald-400 font-medium" },
+    { pattern: /\b(unsolved|no arrests|unconfirmed)\b/gi, className: "text-amber-400 font-medium" },
+    { pattern: /\b(FBI|official FBI|court documents|press releases|official reports|web search results|official documents|intelligence)\b/gi, className: "text-[#9E8EFD] font-medium" }
+  ];
+
+  let parts = [{ text, isMatch: false }];
+
+  keywords.forEach(({ pattern, className }) => {
+    const newParts = [];
+    parts.forEach((part) => {
+      if (part.isMatch) {
+        newParts.push(part);
+      } else {
+        let lastIndex = 0;
+        let match;
+        pattern.lastIndex = 0;
+        while ((match = pattern.exec(part.text)) !== null) {
+          const index = match.index;
+          const matchedText = match[0];
+          if (index > lastIndex) {
+            newParts.push({ text: part.text.substring(lastIndex, index), isMatch: false });
+          }
+          newParts.push({ text: matchedText, isMatch: true, className });
+          lastIndex = index + matchedText.length;
+        }
+        if (lastIndex < part.text.length) {
+          newParts.push({ text: part.text.substring(lastIndex), isMatch: false });
+        }
+      }
+    });
+    parts = newParts;
+  });
+
+  return parts.map((part, index) => {
+    if (part.isMatch) {
+      return <span key={index} className={part.className}>{part.text}</span>;
+    }
+    return part.text;
+  });
+};
+
+const parseVerdict = (content) => {
+  const cleanContent = content.replace("Hypothesis Verdict:", "").trim();
+  const match = cleanContent.match(/^'(.*?)'\s*->\s*(.*)$/);
+  if (match) {
+    return {
+      hypothesis: match[1],
+      conclusion: match[2]
+    };
+  }
+  const parts = cleanContent.split(" -> ");
+  if (parts.length > 1) {
+    return {
+      hypothesis: parts[0].replace(/^'|'$/g, ''),
+      conclusion: parts.slice(1).join(" -> ")
+    };
+  }
+  return {
+    hypothesis: null,
+    conclusion: cleanContent
+  };
+};
 
 export default function WorkspaceSection({ onBackToLanding }) {
   const [cases, setCases] = useState([]);
@@ -659,14 +726,24 @@ export default function WorkspaceSection({ onBackToLanding }) {
                   <h3 className="font-heading italic text-3xl text-white">
                     Final Case Verdict Summary
                   </h3>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {activeCase.facts
                       .filter((f) => f.source === "ResearchAgent")
-                      .map((f, i) => (
-                        <div key={i} className="text-sm font-body font-light text-white/90 leading-relaxed border-l-2 border-[#7C5CFC]/50 pl-3">
-                          {f.content.replace("Hypothesis Verdict:", "")}
-                        </div>
-                      ))}
+                      .map((f, i) => {
+                        const { hypothesis, conclusion } = parseVerdict(f.content);
+                        return (
+                          <div key={i} className="border-l-2 border-[#7C5CFC]/50 pl-4 py-1 space-y-1">
+                            {hypothesis && (
+                              <div className="text-[10px] font-semibold text-white/40 uppercase tracking-wider font-body">
+                                Hypothesis: <span className="text-white/70 font-normal italic normal-case">"{hypothesis}"</span>
+                              </div>
+                            )}
+                            <div className="text-sm font-body font-light text-white/90 leading-relaxed">
+                              {highlightImportantText(conclusion)}
+                            </div>
+                          </div>
+                        );
+                      })}
                   </div>
                 </div>
               )}
