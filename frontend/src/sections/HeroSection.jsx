@@ -2,135 +2,167 @@ import React from "react";
 import { motion } from "framer-motion";
 import BlurText from "../components/BlurText";
 
+// Placeholder: wire up to Google OAuth + JWT when ready
+const handleBeginInvestigation = () => {
+  alert("Google OAuth coming soon! 🔐");
+};
+
 export default function HeroSection() {
   const containerVariants = {
     initial: {},
     animate: {
-      transition: {
-        staggerChildren: 0.15,
-      },
+      transition: { staggerChildren: 0.14 },
     },
   };
 
   const itemVariants = {
-    initial: { filter: "blur(10px)", opacity: 0, y: 20 },
+    initial: { filter: "blur(12px)", opacity: 0, y: 24 },
     animate: {
       filter: "blur(0px)",
       opacity: 1,
       y: 0,
-      transition: { duration: 0.8, ease: "easeOut" },
+      transition: { duration: 0.85, ease: "easeOut" },
     },
   };
 
-  return (
-    <section id="home" className="relative w-screen min-h-screen bg-transparent flex flex-col justify-between z-10">
+  const STATS = [
+    {
+      icon: (
+        <svg className="w-6 h-6 stroke-white fill-none" strokeWidth="1.5" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" />
+          <polyline points="12 6 12 12 16 14" />
+        </svg>
+      ),
+      value: "12.5 Sec",
+      label: "Average Investigation Speed",
+    },
+    {
+      icon: (
+        <svg className="w-6 h-6 stroke-white fill-none" strokeWidth="1.5" viewBox="0 0 24 24">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+      ),
+      value: "100%",
+      label: "Automated Evidence Verification",
+    },
+    {
+      icon: (
+        <svg className="w-6 h-6 stroke-white fill-none" strokeWidth="1.5" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" />
+        </svg>
+      ),
+      value: "3 Agents",
+      label: "Parallel Agent Pipeline",
+    },
+  ];
 
-      {/* Main Content Layout */}
+  const TECH = ["FastAPI", "Celery", "Redis", "PostgreSQL", "Gemini Core", "Prometheus"];
+
+  return (
+    <section
+      id="home"
+      className="relative w-screen min-h-screen bg-transparent flex flex-col z-10"
+    >
+      {/* Main Content */}
       <motion.div
         variants={containerVariants}
         initial="initial"
         animate="animate"
-        className="relative z-10 flex-1 flex flex-col items-center justify-center text-center pt-36 px-4"
+        className="relative z-10 flex-1 flex flex-col items-center justify-center text-center pt-36 pb-12 px-4"
       >
-        {/* Animated Badge */}
+        {/* Live Badge */}
         <motion.div
           variants={itemVariants}
-          className="flex items-center gap-2 rounded-full p-1 pr-3 text-sm text-white/90 liquid-glass select-none"
+          className="flex items-center gap-2 rounded-full p-1 pr-4 text-sm text-white/90 liquid-glass select-none mb-6"
         >
-          <span className="bg-white text-black px-3 py-0.5 text-xs font-semibold rounded-full uppercase tracking-wider">
-            Active
+          <span className="relative flex h-2 w-2 ml-1">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
           </span>
-          <span>Multi-Agent Autonomous Core is Live</span>
+          <span className="text-xs font-body font-medium tracking-wide">
+            Multi-Agent Autonomous Core — Live
+          </span>
         </motion.div>
 
-        {/* Word-by-word Animate Blur Title */}
-        <div className="mt-6">
+        {/* Headline */}
+        <div>
           <BlurText
-            text="Deconstruct Complex Problems Across the Digital Universe"
-            className="text-5xl md:text-6xl lg:text-[4.8rem] font-heading italic text-white leading-[0.95] max-w-4xl justify-center tracking-[-3px]"
+            text="Deconstruct Complex Problems."
+            className="text-5xl md:text-6xl lg:text-[5rem] font-heading italic text-white leading-[0.9] max-w-4xl justify-center tracking-[-3px]"
+          />
+          <BlurText
+            text="Verified by AI Agents."
+            className="text-5xl md:text-6xl lg:text-[5rem] font-heading italic text-white/60 leading-[0.9] max-w-4xl justify-center tracking-[-3px] mt-1"
           />
         </div>
 
-        {/* Subheading */}
+        {/* Subheading — from README */}
         <motion.p
           variants={itemVariants}
-          className="mt-6 text-sm md:text-base text-white/80 max-w-xl font-body font-light leading-relaxed"
+          className="mt-7 text-sm md:text-base text-white/70 max-w-lg font-body font-light leading-relaxed"
         >
-          Input any problem. Our Case Manager Agent automatically breaks it down into testable hypotheses, 
-          spawns autonomous Research Agents to crawl the web, and outputs live-verified intelligence in seconds.
+          Submit any open-ended problem. A pipeline of specialized agents — Case Manager,
+          Investigators, and Verifier — collaborates to break it down, crawl the web, and return
+          hallucination-scored intelligence in seconds.
         </motion.p>
 
-        {/* Actions / CTAs */}
-        <motion.div variants={itemVariants} className="flex items-center gap-6 mt-8">
-          <button className="flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium text-white liquid-glass-strong hover:scale-105 transition-transform">
-            Start Investigation
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="7" y1="17" x2="17" y2="7"></line>
-              <polyline points="7 7 17 7 17 17"></polyline>
+        {/* Single CTA — centered */}
+        <motion.div variants={itemVariants} className="mt-9 flex justify-center">
+          <button
+            onClick={handleBeginInvestigation}
+            className="flex items-center gap-2.5 rounded-full px-7 py-3.5 text-sm font-semibold text-white liquid-glass-strong hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg"
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="7" />
+              <line x1="16.5" y1="16.5" x2="21" y2="21" />
             </svg>
-          </button>
-          <button className="flex items-center gap-2 text-white/90 hover:text-white font-medium text-sm py-2 px-3 group">
-            <svg className="w-5 h-5 fill-white group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
-              <polygon points="6 4 20 12 6 20 6 4"></polygon>
-            </svg>
-            Watch Demo
+            Begin Investigation
           </button>
         </motion.div>
 
-        {/* Stats Row */}
-        <motion.div variants={itemVariants} className="flex items-stretch gap-6 mt-10">
-          {/* Stat 1 */}
-          <div className="flex flex-col items-start text-left p-5 w-[220px] rounded-[1.25rem] liquid-glass">
-            {/* Clock SVG */}
-            <svg className="w-7 h-7 stroke-white fill-none" strokeWidth="1.5" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-            <h4 className="text-4xl font-heading italic text-white tracking-[-1px] leading-none mt-6">
-              12.5 Sec
-            </h4>
-            <p className="text-xs text-white/60 font-body font-light mt-2">
-              Average Investigation Speed
-            </p>
-          </div>
-
-          {/* Stat 2 */}
-          <div className="flex flex-col items-start text-left p-5 w-[220px] rounded-[1.25rem] liquid-glass">
-            {/* Shield SVG */}
-            <svg className="w-7 h-7 stroke-white fill-none" strokeWidth="1.5" viewBox="0 0 24 24">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-            </svg>
-            <h4 className="text-4xl font-heading italic text-white tracking-[-1px] leading-none mt-6">
-              100%
-            </h4>
-            <p className="text-xs text-white/60 font-body font-light mt-2">
-              Automated Evidence Verification Rate
-            </p>
-          </div>
+        {/* Stats Row — 3 cards, properly spaced from CTA */}
+        <motion.div
+          variants={itemVariants}
+          className="flex flex-wrap items-stretch justify-center gap-5 mt-14"
+        >
+          {STATS.map((s, i) => (
+            <div
+              key={i}
+              className="flex flex-col items-start text-left p-5 w-[190px] rounded-[1.25rem] liquid-glass hover:scale-[1.03] transition-transform duration-300"
+            >
+              {s.icon}
+              <h4 className="text-3xl font-heading italic text-white tracking-[-1px] leading-none mt-5">
+                {s.value}
+              </h4>
+              <p className="text-xs text-white/55 font-body font-light mt-2 leading-snug">
+                {s.label}
+              </p>
+            </div>
+          ))}
         </motion.div>
       </motion.div>
 
-      {/* Footer Partners section */}
+      {/* Footer Tech Strip — properly separated */}
       <motion.div
-        variants={itemVariants}
-        initial="initial"
-        whileInView="animate"
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="relative z-10 flex flex-col items-center gap-4 pb-8"
+        transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
+        className="relative z-10 flex flex-col items-center gap-3 pb-10 pt-2 border-t border-white/[0.06]"
       >
-        <div className="rounded-full px-4 py-1 text-[11px] font-medium text-white/70 liquid-glass select-none">
-          Powered by state-of-the-art AI infrastructure and protocols
-        </div>
-        <div className="flex items-center justify-center gap-12 md:gap-16 text-2xl md:text-3xl font-heading italic text-white/90 select-none mt-2">
-          <span>FastAPI</span>
-          <span>·</span>
-          <span>Celery</span>
-          <span>·</span>
-          <span>Redis</span>
-          <span>·</span>
-          <span>PostgreSQL</span>
-          <span>·</span>
-          <span>Gemini Core</span>
+        <p className="text-[10px] font-body font-medium text-white/40 uppercase tracking-[0.18em] select-none">
+          Powered by
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 select-none">
+          {TECH.map((t, i) => (
+            <React.Fragment key={t}>
+              <span className="text-lg md:text-xl font-heading italic text-white/80">{t}</span>
+              {i < TECH.length - 1 && (
+                <span className="text-white/25 text-xs">·</span>
+              )}
+            </React.Fragment>
+          ))}
         </div>
       </motion.div>
     </section>
