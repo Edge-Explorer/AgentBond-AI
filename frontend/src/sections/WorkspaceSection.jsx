@@ -360,7 +360,7 @@ export default function WorkspaceSection({ onBackToLanding }) {
                     e.stopPropagation();
                     handleHideCase(c.case_id);
                   }}
-                  className="absolute top-3.5 right-3.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-red-400 z-20 cursor-pointer"
+                  className="absolute top-3.5 right-3.5 p-1.5 rounded-lg text-white/30 hover:bg-white/10 hover:text-red-400 transition-all duration-200 z-20 cursor-pointer"
                   title="Hide investigation"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
