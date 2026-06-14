@@ -254,7 +254,7 @@ export default function WorkspaceSection({ onBackToLanding }) {
         <div className="mt-4 pt-4 border-t border-white/10">
           <button
             onClick={onBackToLanding}
-            className="w-full py-2.5 text-xs font-semibold tracking-wider text-white/50 hover:text-white rounded-full border border-white/5 hover:border-white/15 transition-all text-center flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 rounded-full py-3.5 text-sm font-semibold text-white liquid-glass-strong hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg cursor-pointer"
           >
             ← Back to Landing
           </button>

@@ -215,7 +215,7 @@ export default function Navbar({ onOpenAuth, currentView, onViewChange }) {
               href="https://www.linkedin.com/in/karan-shelar-779381343/"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-8 h-8 rounded-full border border-white/10 hover:border-white/20 hover:bg-white/[0.05] flex items-center justify-center text-white/70 hover:text-white transition-all duration-200"
+              className="w-9 h-9 rounded-full liquid-glass-strong hover:scale-105 active:scale-95 flex items-center justify-center text-white/80 hover:text-white transition-all duration-200 cursor-pointer"
               title="LinkedIn Profile"
             >
               <LinkedinIcon />
@@ -224,7 +224,7 @@ export default function Navbar({ onOpenAuth, currentView, onViewChange }) {
               href="https://github.com/Edge-Explorer"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-8 h-8 rounded-full border border-white/10 hover:border-white/20 hover:bg-white/[0.05] flex items-center justify-center text-white/70 hover:text-white transition-all duration-200"
+              className="w-9 h-9 rounded-full liquid-glass-strong hover:scale-105 active:scale-95 flex items-center justify-center text-white/80 hover:text-white transition-all duration-200 cursor-pointer"
               title="Github Profile"
             >
               <GithubIcon />
@@ -233,7 +233,7 @@ export default function Navbar({ onOpenAuth, currentView, onViewChange }) {
               href="https://github.com/Edge-Explorer/AgentBond-AI"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-8 h-8 rounded-full border border-white/10 hover:border-white/20 hover:bg-white/[0.05] flex items-center justify-center text-white/70 hover:text-white transition-all duration-200"
+              className="w-9 h-9 rounded-full liquid-glass-strong hover:scale-105 active:scale-95 flex items-center justify-center text-white/80 hover:text-white transition-all duration-200 cursor-pointer"
               title="Repository"
             >
               <RepoIcon />
