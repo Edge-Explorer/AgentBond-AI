@@ -95,7 +95,7 @@ export function AuthProvider({ children }) {
 
   // Login with Google (OAuth flow in a Popup)
   const loginWithGoogle = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const width = 500;
       const height = 600;
       const left = window.screen.width / 2 - width / 2;
@@ -107,15 +107,25 @@ export function AuthProvider({ children }) {
         `width=${width},height=${height},top=${top},left=${left}`
       );
 
+      let completed = false;
+
       const handleMessage = async (event) => {
+        if (completed) return;
         // Validate origin if production has specific domain
         if (event.data && event.data.type === "AUTH_SUCCESS") {
+          completed = true;
+          clearInterval(checkPopupClosed);
+          window.removeEventListener("message", handleMessage);
+
           const googleToken = event.data.token;
           localStorage.setItem("token", googleToken);
           setToken(googleToken);
-          await fetchUser(googleToken);
-          window.removeEventListener("message", handleMessage);
-          resolve({ success: true });
+          try {
+            await fetchUser(googleToken);
+            resolve({ success: true });
+          } catch (err) {
+            resolve({ success: false, error: err.message || "Failed to fetch user profile" });
+          }
         }
       };
 
@@ -123,7 +133,9 @@ export function AuthProvider({ children }) {
 
       // Check if popup is closed before completing
       const checkPopupClosed = setInterval(() => {
+        if (completed) return;
         if (!popup || popup.closed) {
+          completed = true;
           clearInterval(checkPopupClosed);
           window.removeEventListener("message", handleMessage);
           resolve({ success: false, error: "Popup closed by user" });
