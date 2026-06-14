@@ -228,7 +228,7 @@ export default function WorkspaceSection({ onBackToLanding }) {
 
                 <div className="flex items-center justify-between w-full">
                   <span className="text-[10px] text-white/40 font-light font-body">
-                    {c.updated_at ? new Date(c.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"}
+                    {c.updated_at ? new Date(c.updated_at.endsWith("Z") ? c.updated_at : c.updated_at + "Z").toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"}
                   </span>
 
                   <span
