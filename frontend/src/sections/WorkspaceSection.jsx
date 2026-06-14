@@ -42,6 +42,8 @@ const AgentBondWatermark = ({ size = 200, className = "" }) => (
     <line x1="80" y1="78" x2="100" y2="98" stroke="white" strokeWidth="5.5" strokeLinecap="round" strokeOpacity="0.6"/>
     <line x1="79" y1="77" x2="99" y2="97" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.35"/>
   </svg>
+);
+
 // Helper to highlight important keywords in verdict conclusions
 const highlightImportantText = (text) => {
   if (!text) return "";
