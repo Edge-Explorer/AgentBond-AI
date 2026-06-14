@@ -147,15 +147,22 @@ def run_case_manager_task(self, case_id: str):
         logger.error(f"Error executing run_case_manager_task: {str(e)}")
         AGENT_FAILURES.labels(agent_name="InvestigationPipeline", error_type=type(e).__name__).inc()
         
-        try:
-            ContextManager.update_status(db=db, case_id=case_id, status=CaseStatus.FAILED)
-        except Exception as rollback_err:
-            logger.error(f"Failed to set status to FAILED for case ID {case_id}: {str(rollback_err)}")
+        # Only set status to FAILED if we are out of retries
+        if self.request.retries >= self.max_retries:
+            try:
+                ContextManager.update_status(db=db, case_id=case_id, status=CaseStatus.FAILED)
+            except Exception as rollback_err:
+                logger.error(f"Failed to set status to FAILED for case ID {case_id}: {str(rollback_err)}")
             
         try:
             raise self.retry(exc=e, countdown=10)
         except Exception as retry_err:
             logger.error(f"Task retry failed: {str(retry_err)}")
+            # Force FAILED status if we can't retry anymore
+            try:
+                ContextManager.update_status(db=db, case_id=case_id, status=CaseStatus.FAILED)
+            except Exception:
+                pass
             return {"status": "failed", "error": str(e)}
             
     finally:

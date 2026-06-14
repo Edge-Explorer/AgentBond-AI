@@ -94,8 +94,11 @@ class LLMService:
         )
         
         try:
-            return json.loads(raw_response)
-        except json.JSONDecodeError as e:
+            res = json.loads(raw_response)
+            if not isinstance(res, dict):
+                raise ValueError(f"Expected JSON dictionary from Gemini, got {type(res).__name__}")
+            return res
+        except (json.JSONDecodeError, ValueError) as e:
             # Simple fallback if JSON parsing fails
             clean_str = raw_response.strip()
             if clean_str.startswith("```json"):
@@ -103,6 +106,9 @@ class LLMService:
             elif clean_str.startswith("```"):
                 clean_str = clean_str.split("```")[1].split("```")[0].strip()
             try:
-                return json.loads(clean_str)
+                res2 = json.loads(clean_str)
+                if not isinstance(res2, dict):
+                    raise ValueError(f"Expected JSON dictionary from Gemini on fallback, got {type(res2).__name__}")
+                return res2
             except Exception:
                 raise ValueError(f"Failed to parse JSON response from Gemini. Raw output: {raw_response}") from e
