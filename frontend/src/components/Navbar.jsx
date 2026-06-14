@@ -77,14 +77,14 @@ export default function Navbar({ onOpenAuth }) {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="fixed top-4 left-0 right-0 px-5 lg:px-10 z-50"
       >
-        {/* Single row: Left logo | Absolutely centered nav | Right actions */}
-        <div className="relative flex items-center justify-between">
+        {/* 3-column grid: [Logo] [Nav Pill centered] [Icons] */}
+        <div className="grid grid-cols-3 items-center w-full">
 
-          {/* ── LEFT: Logo / Wordmark ── */}
+          {/* ── COL 1: Logo / Wordmark ── */}
           <a
             href="#home"
             onClick={(e) => { e.preventDefault(); handleNavClick("#home"); }}
-            className="flex items-center gap-2.5 select-none group"
+            className="flex items-center gap-2.5 select-none group justify-self-start"
             aria-label="AgentBond AI — Go to home"
           >
             {/* Icon badge */}
@@ -96,7 +96,6 @@ export default function Navbar({ onOpenAuth }) {
             <div className="hidden sm:flex flex-col leading-none">
               <span
                 className="text-white font-heading italic text-[1.1rem] tracking-[-0.02em] leading-none"
-                style={{ letterSpacing: "-0.02em" }}
               >
                 AgentBond
               </span>
@@ -106,54 +105,56 @@ export default function Navbar({ onOpenAuth }) {
             </div>
           </a>
 
-          {/* ── CENTER: Nav pill — truly centered via absolute positioning ── */}
-          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-0.5 px-1.5 py-1.5 rounded-full liquid-glass">
-            {NAV_LINKS.map(({ label, href }) => (
-              <a
-                key={href}
-                href={href}
-                onClick={(e) => { e.preventDefault(); handleNavClick(href); }}
-                className="px-4 py-2 text-sm font-medium text-white/80 font-body hover:text-white hover:bg-white/[0.08] rounded-full transition-all duration-200"
-              >
-                {label}
-              </a>
-            ))}
-
-            {/* Separator */}
-            <span className="w-px h-4 bg-white/15 mx-1" />
-
-            {/* CTA inside nav pill */}
-            {user ? (
-              <div className="flex items-center gap-2 pl-1 pr-2">
-                <img
-                  src={user.avatar_url}
-                  alt={user.name}
-                  className="w-6 h-6 rounded-full border border-white/20"
-                />
-                <span className="text-xs font-semibold text-white max-w-[72px] truncate">{user.name}</span>
-                <button
-                  onClick={logout}
-                  className="text-[11px] text-white/40 hover:text-white/80 transition-colors ml-0.5 cursor-pointer"
+          {/* ── COL 2: Nav pill — guaranteed screen center ── */}
+          <div className="hidden md:flex justify-center">
+            <div className="flex items-center gap-0.5 px-1.5 py-1.5 rounded-full liquid-glass">
+              {NAV_LINKS.map(({ label, href }) => (
+                <a
+                  key={href}
+                  href={href}
+                  onClick={(e) => { e.preventDefault(); handleNavClick(href); }}
+                  className="px-4 py-2 text-sm font-medium text-white/80 font-body hover:text-white hover:bg-white/[0.08] rounded-full transition-all duration-200"
                 >
-                  ✕
+                  {label}
+                </a>
+              ))}
+
+              {/* Separator */}
+              <span className="w-px h-4 bg-white/15 mx-1" />
+
+              {/* CTA inside nav pill */}
+              {user ? (
+                <div className="flex items-center gap-2 pl-1 pr-2">
+                  <img
+                    src={user.avatar_url}
+                    alt={user.name}
+                    className="w-6 h-6 rounded-full border border-white/20"
+                  />
+                  <span className="text-xs font-semibold text-white max-w-[72px] truncate">{user.name}</span>
+                  <button
+                    onClick={logout}
+                    className="text-[11px] text-white/40 hover:text-white/80 transition-colors ml-0.5 cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={onOpenAuth}
+                  className="flex items-center gap-1.5 bg-white text-black px-4 py-2 text-sm font-semibold rounded-full hover:bg-white/92 active:scale-95 transition-all whitespace-nowrap"
+                >
+                  Begin Investigation
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="11" cy="11" r="7" />
+                    <line x1="16.5" y1="16.5" x2="21" y2="21" />
+                  </svg>
                 </button>
-              </div>
-            ) : (
-              <button
-                onClick={onOpenAuth}
-                className="flex items-center gap-1.5 bg-white text-black px-4 py-2 text-sm font-semibold rounded-full hover:bg-white/92 active:scale-95 transition-all whitespace-nowrap"
-              >
-                Begin Investigation
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="11" cy="11" r="7" />
-                  <line x1="16.5" y1="16.5" x2="21" y2="21" />
-                </svg>
-              </button>
-            )}
+              )}
+            </div>
           </div>
 
-          {/* ── RIGHT: Social icons + Mobile hamburger ── */}
-          <div className="flex items-center gap-2">
+          {/* ── COL 3: Social icons + Mobile hamburger ── */}
+          <div className="flex items-center gap-2 justify-self-end">
             {/* LinkedIn */}
             <a
               href="https://www.linkedin.com/in/karan-shelar-779381343/"
