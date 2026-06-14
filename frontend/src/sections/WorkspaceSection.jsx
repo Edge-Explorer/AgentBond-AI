@@ -226,9 +226,9 @@ export default function WorkspaceSection({ onBackToLanding }) {
   };
 
   return (
-    <section className="relative w-screen min-h-screen pt-10 pb-10 px-6 lg:px-12 flex gap-6 z-10 text-white selection:bg-[#7C5CFC]/30 selection:text-white">
+    <section className="relative w-full h-screen pt-6 pb-6 px-6 lg:px-12 flex gap-6 z-10 text-white selection:bg-[#7C5CFC]/30 selection:text-white box-border">
       {/* ── SIDEBAR: PAST CASES ── */}
-      <div className="w-80 rounded-[1.25rem] bg-[#0a0a0c]/85 border border-white/10 backdrop-blur-2xl shadow-[0_24px_80px_rgba(0,0,0,0.6)] flex flex-col p-5 h-[calc(100vh-80px)] shrink-0 relative overflow-hidden">
+      <div className="w-80 rounded-[1.25rem] bg-[#0a0a0c]/85 border border-white/10 backdrop-blur-2xl shadow-[0_24px_80px_rgba(0,0,0,0.6)] flex flex-col p-5 h-full shrink-0 relative overflow-hidden">
         <div className="flex items-center justify-between mb-6">
           <h2 className="font-heading italic text-2xl tracking-tight text-white/90">Investigation nodes</h2>
           <button
@@ -307,7 +307,7 @@ export default function WorkspaceSection({ onBackToLanding }) {
       </div>
 
       {/* ── MAIN WORKSPACE ── */}
-      <div className="flex-1 rounded-[1.25rem] bg-[#09090b]/85 border border-white/10 backdrop-blur-2xl shadow-[0_24px_80px_rgba(0,0,0,0.6)] flex flex-col p-8 h-[calc(100vh-80px)] overflow-y-auto scrollbar-thin relative overflow-hidden">
+      <div className="flex-1 rounded-[1.25rem] bg-[#09090b]/85 border border-white/10 backdrop-blur-2xl shadow-[0_24px_80px_rgba(0,0,0,0.6)] flex flex-col p-8 h-full overflow-y-auto scrollbar-thin relative overflow-hidden">
         <AnimatePresence mode="wait">
           {isCreatingNew ? (
             /* CREATE CASE WORKSPACE */

@@ -12,7 +12,7 @@ function MainAppContent() {
   const [view, setView] = useState("landing"); // 'landing' | 'workspace'
 
   return (
-    <div className="relative w-screen bg-black text-white selection:bg-white selection:text-black min-h-screen">
+    <div className={`relative w-full bg-black text-white selection:bg-white selection:text-black ${view === "workspace" ? "h-screen overflow-hidden" : "min-h-screen"}`}>
       {/* Shared Background Video Layer */}
       <div className="fixed inset-0 w-full h-full overflow-hidden z-0 pointer-events-none">
         <FadingVideo
