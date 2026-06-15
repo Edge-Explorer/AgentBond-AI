@@ -24,7 +24,9 @@ app = FastAPI(
 
 app.add_middleware(
     SessionMiddleware,
-    secret_key=os.getenv("SESSION_SECRET_KEY", "super-secret-session-key-for-oauth")
+    secret_key=os.getenv("SESSION_SECRET_KEY", "super-secret-session-key-for-oauth"),
+    same_site="none",
+    https_only=True
 )
 
 app.add_middleware(
@@ -45,6 +47,7 @@ async def forward_proto_middleware(request: Request, call_next):
     elif "localhost" not in request.url.host and "127.0.0.1" not in request.url.host:
         request.scope["scheme"] = "https"
     return await call_next(request)
+
 app.include_router(cases_router)
 app.include_router(auth_router)
 
