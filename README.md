@@ -1,3 +1,12 @@
+---
+title: AgentBond API
+emoji: 🕵️
+colorFrom: indigo
+colorTo: purple
+sdk: docker
+app_port: 7860
+pinned: false
+---
 # Multi-Agent Investigation Engine
 
 A production-grade agent orchestration runtime built for collaborative, context-aware investigation of complex problems. The investigation use-case is the demo — the architecture underneath is a general-purpose agent runtime.
