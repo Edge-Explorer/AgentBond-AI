@@ -9,7 +9,7 @@ print("PROMETHEUS_MULTIPROC_DIR set to:", os.environ.get("PROMETHEUS_MULTIPROC_D
 print("Does directory exist?:", os.path.isdir(metrics_path))
 print("----------------------------")
 
-from fastapi import FastAPI, Response  # type: ignore
+from fastapi import FastAPI, Response, Request  # type: ignore
 from fastapi.middleware.cors import CORSMiddleware   # type: ignore
 from prometheus_client import CollectorRegistry, multiprocess, generate_latest, CONTENT_TYPE_LATEST
 from starlette.middleware.sessions import SessionMiddleware # type: ignore
@@ -36,6 +36,15 @@ app.add_middleware(
 )
 
 # Register routes
+@app.middleware("http")
+async def forward_proto_middleware(request: Request, call_next):
+    # Trust Hugging Face reverse proxy protocol header
+    proto = request.headers.get("x-forwarded-proto")
+    if proto:
+        request.scope["scheme"] = proto
+    elif "localhost" not in request.url.host and "127.0.0.1" not in request.url.host:
+        request.scope["scheme"] = "https"
+    return await call_next(request)
 app.include_router(cases_router)
 app.include_router(auth_router)
 
