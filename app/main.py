@@ -16,6 +16,25 @@ from starlette.middleware.sessions import SessionMiddleware # type: ignore
 from app.api.routes import router as cases_router
 from app.api.auth import router as auth_router
 
+# Diagnostic: check environment variables on startup
+google_id = os.getenv("GOOGLE_CLIENT_ID")
+google_secret = os.getenv("GOOGLE_CLIENT_SECRET")
+
+print("--- OAUTH CREDENTIAL DIAGNOSTICS ---")
+if google_id:
+    print(f"GOOGLE_CLIENT_ID: length={len(google_id)}, starts with='{google_id[:10]}...', ends with='...{google_id[-10:]}'")
+else:
+    print("GOOGLE_CLIENT_ID is NOT SET!")
+
+if google_secret:
+    # Check for trailing newlines or spaces
+    has_whitespace = google_secret != google_secret.strip()
+    print(f"GOOGLE_CLIENT_SECRET: length={len(google_secret)}, has_whitespace={has_whitespace}, starts with='{google_secret[:5]}...', ends with='...{google_secret[-5:]}'")
+else:
+    print("GOOGLE_CLIENT_SECRET is NOT SET!")
+print("-------------------------------------")
+
+
 app = FastAPI(
     title="Multi-Agent Investigator Engine",
     description="An agent orchestration runtime with shared context and verification.",
