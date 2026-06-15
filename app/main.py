@@ -2,6 +2,8 @@ import os
 
 # 1. Setup absolute path for multi-process metrics
 metrics_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "prometheus_multiproc_dir"))
+if not os.path.exists(metrics_path):
+    os.makedirs(metrics_path, exist_ok=True)
 os.environ["PROMETHEUS_MULTIPROC_DIR"] = metrics_path
 
 print("--- DIAGNOSTICS STARTUP ---")
