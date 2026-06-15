@@ -184,6 +184,20 @@ async def google_callback(request: Request, db: Session = Depends(get_db)):
     
     user_info = token.get("userinfo")
     if not user_info:
+        access_token = token.get("access_token")
+        if access_token:
+            import httpx
+            try:
+                resp = httpx.get(
+                    "https://www.googleapis.com/oauth2/v3/userinfo",
+                    headers={"Authorization": f"Bearer {access_token}"}
+                )
+                if resp.status_code == 200:
+                    user_info = resp.json()
+            except Exception as httpx_err:
+                print(f"Fallback userinfo fetch failed: {httpx_err}")
+
+    if not user_info:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Failed to retrieve user info from Google"
