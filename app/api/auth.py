@@ -156,6 +156,24 @@ async def google_login(request: Request):
 
 @router.get("/google/callback")
 async def google_callback(request: Request, db: Session = Depends(get_db)):
+    # 1. Fallback: Manually restore state in session if lost due to cross-domain cookie restrictions
+    state = request.query_params.get("state")
+    if state:
+        redirect_uri = request.url_for("google_callback")
+        if "https" in str(request.base_url) or "hf.space" in str(request.base_url):
+            redirect_uri = str(redirect_uri).replace("http://", "https://")
+        
+        session_key = f"_state_google_{state}"
+        if session_key not in request.session:
+            import time
+            request.session[session_key] = {
+                "data": {
+                    "state": state,
+                    "redirect_uri": redirect_uri
+                },
+                "exp": time.time() + 600
+            }
+
     try:
         token = await oauth.google.authorize_access_token(request)
     except Exception as e:
@@ -182,12 +200,11 @@ async def google_callback(request: Request, db: Session = Depends(get_db)):
     ).first()
     
     if not user:
-        # Register new user
+        # Create new user
         user = UserModel(
-            id=uuid.uuid4().hex,
             email=email,
-            name=name or email.split("@")[0],
-            avatar_url=picture or f"https://api.dicebear.com/7.x/bottts/svg?seed={email}",
+            name=name,
+            profile_picture=picture,
             google_id=google_id
         )
         db.add(user)
@@ -196,30 +213,33 @@ async def google_callback(request: Request, db: Session = Depends(get_db)):
     elif not user.google_id:
         # Link existing email account to google
         user.google_id = google_id
-        if picture and not user.avatar_url:
-            user.avatar_url = picture
+        if picture and not user.profile_picture:
+            user.profile_picture = picture
         db.commit()
         db.refresh(user)
-        
-    # Generate JWT
-    jwt_token = create_access_token(data={"sub": user.id})
+
+    # Generate token
+    token_str = create_access_token(data={"sub": user.id})
     
-    # Return HTML payload that uses postMessage to send token back to react app
+    # Return HTML that sends the token back to the main frontend window and closes the popup
+    frontend_url = os.getenv("FRONTEND_URL", "https://agent-bond-ai.vercel.app")
     html_content = f"""
-    <!DOCTYPE html>
     <html>
     <head>
-        <title>Authenticating...</title>
-    </head>
-    <body>
         <script>
-            window.opener.postMessage({{ type: "AUTH_SUCCESS", token: "{jwt_token}" }}, "*");
+            window.opener.postMessage({{
+                type: "AUTH_SUCCESS",
+                token: "{token_str}"
+            }}, "{frontend_url}");
             window.close();
         </script>
-        <p>Authentication complete. You can close this window now.</p>
+    </head>
+    <body>
+        <p>Authentication successful! Redirecting...</p>
     </body>
     </html>
     """
+    from fastapi.responses import HTMLResponse
     return HTMLResponse(content=html_content)
 
 @router.get("/me", response_model=UserResponse)
