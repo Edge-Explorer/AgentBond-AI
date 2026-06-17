@@ -42,6 +42,23 @@ if grafana_key:
     print(f"GRAFANA_API_KEY: length={len(grafana_key)}, has_whitespace={has_whitespace}, starts with='{grafana_key[:8]}...', ends with='...{grafana_key[-8:]}'")
 else:
     print("GRAFANA_API_KEY is NOT SET in HF Secrets!")
+
+# Diagnostic: check prometheus.yml contents
+try:
+    prom_path = "/code/prometheus.yml"
+    if os.path.exists(prom_path):
+        with open(prom_path, "r") as f:
+            lines = f.readlines()
+        print("--- prometheus.yml CONTENTS ---")
+        for line in lines:
+            if "password:" in line:
+                val = line.split("password:")[1].strip()
+                print(f"    password: [MASKED, length={len(val)}, starts_with='{val[:8]}']")
+            else:
+                print("   ", line.strip())
+        print("--------------------------------")
+except Exception as e:
+    print("Failed to read prometheus.yml for diagnostics:", e)
 print("-------------------------------------")
 
 
