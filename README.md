@@ -75,7 +75,7 @@ Verifier Agent  (hallucination and context drift scoring)
     |
 Prometheus Metrics Exporter  (/metrics/ endpoint)
     |
-Local Grafana  (scraping production HF Space over HTTPS)
+Grafana Cloud  (remote scraping of production HF Space over HTTPS)
 ```
 
 ---
@@ -192,9 +192,9 @@ The following custom metrics are tracked:
 | `agent_latency_seconds` | Histogram | End-to-end latency per agent type |
 | `agent_runs_total` | Counter | Total agent invocations by type and outcome |
 
-### Grafana
+### Grafana Cloud
 
-A local Grafana instance connects to the production backend over HTTPS. The Prometheus scrape target in `prometheus.yml` is configured as:
+Metrics are visualised on **Grafana Cloud** — a fully managed, hosted Grafana instance. A Grafana Cloud-managed Prometheus scrape job pulls directly from the production backend over HTTPS using a configured scrape target:
 
 ```yaml
 scrape_configs:
@@ -205,7 +205,9 @@ scrape_configs:
       - targets: ["karan6124-agentbond-api.hf.space"]
 ```
 
-Dashboards available in the `AgentBond Analytics` folder at `http://localhost:3000`:
+This scrape job is configured inside the Grafana Cloud UI under **Connections → Add new connection → Prometheus**. No local Prometheus or Grafana process is required.
+
+Dashboards are published inside the **AgentBond Analytics** folder on Grafana Cloud:
 
 - **LLM Token Consumption Rate** — input and output token throughput over time (tokens/second)
 - **Average Agent Latency** — rolling average latency per agent type in seconds
@@ -285,7 +287,7 @@ AgentBond-AI/
 | OAuth Library | Authlib (Starlette integration) |
 | Authentication | JWT (python-jose) + bcrypt |
 | Metrics | Prometheus Client (multi-process mode) |
-| Dashboards | Grafana |
+| Dashboards | Grafana Cloud (hosted) |
 | Container Runtime | Docker |
 | Process Manager | Supervisord |
 | Backend Hosting | Hugging Face Spaces (Docker SDK) |
@@ -434,29 +436,20 @@ The API will be available at `http://localhost:8000`. Interactive API documentat
 
 The frontend will be available at `http://localhost:5173`.
 
+### Observability (Production — Grafana Cloud)
+
+Production metrics are visualised on Grafana Cloud. The hosted Grafana Cloud Prometheus agent is configured to scrape the live Hugging Face Space directly:
+
+- **Grafana Cloud Dashboard:** [grafana.com/orgs/your-org](https://grafana.com) — log in to view the **AgentBond Analytics** folder.
+- No local Prometheus or Grafana process is needed to view production metrics.
+
 ### Observability (Local)
 
-Once Docker Desktop is running and the backend is serving traffic:
+For local development, Docker Desktop spins up a lightweight Prometheus sidecar that scrapes the local backend:
 
 - **Prometheus:** `http://localhost:9090` — scrapes metrics from `host.docker.internal:8000`
-- **Grafana:** `http://localhost:3000` — default credentials are `admin / admin`
 
-To view production metrics from the live Hugging Face Space, update `prometheus.yml` to use the production target:
-
-```yaml
-scrape_configs:
-  - job_name: "agent-engine-api"
-    metrics_path: "/metrics/"
-    scheme: "https"
-    static_configs:
-      - targets: ["karan6124-agentbond-api.hf.space"]
-```
-
-Then restart the Prometheus container:
-
-```bash
-docker compose restart prometheus
-```
+To view local metrics in Grafana Cloud, you can temporarily point your Grafana Cloud scrape configuration at your local backend (requires a public tunnel such as `ngrok`) or use the Grafana Agent in push mode.
 
 ---
 
@@ -505,6 +498,10 @@ Hugging Face Spaces provides free persistent Docker container hosting with a pub
 **Why Upstash Redis instead of a local Redis container in production?**
 
 A local Redis container cannot run alongside the application on Hugging Face Spaces without significantly increasing container complexity. Upstash provides a managed, serverless Redis instance with TLS support (`rediss://`) and a free tier sufficient for the throughput of this application. The connection is shared between the FastAPI process and the Celery worker without any additional configuration.
+
+**Why Grafana Cloud instead of a local Grafana instance?**
+
+The production backend runs on Hugging Face Spaces, which is a remote host. A local Grafana instance can scrape the production `/metrics/` endpoint over HTTPS, but this approach requires keeping a local machine permanently on and connected to the internet. Grafana Cloud eliminates this dependency entirely: the hosted scrape agent runs 24/7 from Grafana's infrastructure and persists metric history across sessions. Dashboards are accessible from any browser without needing a local Docker environment, which is the appropriate setup for a production observability stack.
 
 ---
 
