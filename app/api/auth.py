@@ -216,6 +216,7 @@ async def google_callback(request: Request, db: Session = Depends(get_db)):
     if not user:
         # Create new user
         user = UserModel(
+            id=uuid.uuid4().hex,
             email=email,
             name=name,
             avatar_url=picture,
