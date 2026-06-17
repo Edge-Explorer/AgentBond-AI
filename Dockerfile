@@ -12,7 +12,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
     supervisor \
+    wget \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
+
+# Download and install Prometheus
+RUN wget https://github.com/prometheus/prometheus/releases/download/v2.51.2/prometheus-2.51.2.linux-amd64.tar.gz && \
+    tar -xvf prometheus-2.51.2.linux-amd64.tar.gz && \
+    mv prometheus-2.51.2.linux-amd64/prometheus /usr/local/bin/ && \
+    mv prometheus-2.51.2.linux-amd64/promtool /usr/local/bin/ && \
+    rm -rf prometheus-2.51.2.linux-amd64*
 
 # Copy pyproject.toml and build files
 COPY pyproject.toml ./
@@ -20,6 +29,9 @@ COPY pyproject.toml ./
 # Install python dependencies first to cache this layer
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -e .
+
+# Copy prometheus configuration file
+COPY prometheus.yml /code/prometheus.yml
 
 # Copy supervisord config
 COPY supervisord.conf /etc/supervisor/supervisord.conf
