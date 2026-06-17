@@ -33,6 +33,9 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copy prometheus configuration file
 COPY prometheus.yml /code/prometheus.yml
 
+# Copy environment variable injection script
+COPY inject_key.py /code/inject_key.py
+
 # Copy supervisord config
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 
