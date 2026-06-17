@@ -218,7 +218,7 @@ async def google_callback(request: Request, db: Session = Depends(get_db)):
         user = UserModel(
             email=email,
             name=name,
-            profile_picture=picture,
+            avatar_url=picture,
             google_id=google_id
         )
         db.add(user)
@@ -227,8 +227,8 @@ async def google_callback(request: Request, db: Session = Depends(get_db)):
     elif not user.google_id:
         # Link existing email account to google
         user.google_id = google_id
-        if picture and not user.profile_picture:
-            user.profile_picture = picture
+        if picture and not user.avatar_url:
+            user.avatar_url = picture
         db.commit()
         db.refresh(user)
 
