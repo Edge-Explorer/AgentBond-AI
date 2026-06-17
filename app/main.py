@@ -34,6 +34,14 @@ if google_secret:
     print(f"GOOGLE_CLIENT_SECRET: length={len(google_secret)}, has_whitespace={has_whitespace}, starts with='{google_secret[:5]}...', ends with='...{google_secret[-5:]}'")
 else:
     print("GOOGLE_CLIENT_SECRET is NOT SET!")
+
+grafana_key = os.getenv("GRAFANA_API_KEY")
+print("--- GRAFANA API KEY DIAGNOSTICS ---")
+if grafana_key:
+    has_whitespace = grafana_key != grafana_key.strip()
+    print(f"GRAFANA_API_KEY: length={len(grafana_key)}, has_whitespace={has_whitespace}, starts with='{grafana_key[:8]}...', ends with='...{grafana_key[-8:]}'")
+else:
+    print("GRAFANA_API_KEY is NOT SET in HF Secrets!")
 print("-------------------------------------")
 
 
