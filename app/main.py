@@ -65,7 +65,7 @@ async def forward_proto_middleware(request: Request, call_next):
     proto = request.headers.get("x-forwarded-proto")
     if proto:
         request.scope["scheme"] = proto
-    elif "localhost" not in request.url.host and "127.0.0.1" not in request.url.host:
+    elif "localhost" not in (request.url.hostname or "") and "127.0.0.1" not in (request.url.hostname or ""):
         request.scope["scheme"] = "https"
     return await call_next(request)
 
