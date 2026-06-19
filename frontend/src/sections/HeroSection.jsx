@@ -30,7 +30,7 @@ export default function HeroSection({ onOpenAuth, onViewWorkspace }) {
           <polyline points="12 6 12 12 16 14" />
         </svg>
       ),
-      value: "12.5 Sec",
+      value: "4 Sec",
       label: "Average Agent Latency",
     },
     {
@@ -99,8 +99,8 @@ export default function HeroSection({ onOpenAuth, onViewWorkspace }) {
           variants={itemVariants}
           className="mt-7 text-sm md:text-base text-white/70 max-w-lg font-body font-light leading-relaxed"
         >
-          Submit any open-ended problem. A pipeline of specialized agents — Case Manager,
-          Investigators, and Verifier — collaborates to break it down, crawl the web, and return
+          Submit any open-ended problem. A pipeline of specialized agents — Case Manager
+          and Research Agent — collaborates to break it down, crawl the web, and return
           hallucination-scored intelligence in seconds.
         </motion.p>
 
